@@ -3,6 +3,13 @@ site_name: compiladores-g6-t01
 theme:
     name: material
 
+markdown_extensions:
+    - pymdownx.arithmatex:
+          generic: true
+
+extra_javascript:
+    - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
 nav:
     - Visão Geral:
           - Descrição Compilador para C-- Strict para x86-64: index.md
@@ -28,4 +35,4 @@ nav:
           - Testes de Geração de Código Intermediário: testes_conversao_tac.md
           - Testes de Geração de Código Final: testes_conversao_assembly.md
     - Notas de estudo:
-          - Notas de estudo: notas_estudo.md
+          - 1. Capítulo – Definição Formal da gramática livre de contexto: notas_estudo_1.md
