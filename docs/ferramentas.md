@@ -1,6 +1,6 @@
 # Descrição das Ferramentas e Tecnologias
 
-O desenvolvimento do compilador para a linguagem **C-- Strict** (versão simplificada) utiliza um conjunto de ferramentas clássicas de construção de compiladores. [cite_start]O objetivo central é a tradução de um subconjunto da linguagem C para código de máquina **Assembly x86-64**[cite: 145, 150].
+O desenvolvimento do compilador para a linguagem **C-- Strict** (versão simplificada) utiliza um conjunto de ferramentas clássicas de construção de compiladores.O objetivo central é a tradução de um subconjunto da linguagem C para código de máquina **Assembly x86-64**.
 
 ## 1. Ferramentas de Automação
 
@@ -20,8 +20,8 @@ Responsável pela **Análise Sintática**.
 
 ### Linguagem C++
 A lógica principal do compilador é desenvolvida em **C++**.
-* [cite_start]**Tradução**: O backend em C++ percorre a árvore sintática gerada pelo Bison para realizar a emissão de código **Assembly x86-64**[cite: 150].
-* [cite_start]**Gestão de Memória**: O uso de C++ permite o controle estrito da **Pilha (Stack)**, uma característica fundamental do C-- Strict, que não suporta alocação dinâmica (Heap)[cite: 153, 270].
+**Tradução**: O backend em C++ percorre a árvore sintática gerada pelo Bison para realizar a emissão de código **Assembly x86-64**.
+**Gestão de Memória**: O uso de C++ permite o controle estrito da **Pilha (Stack)**, uma característica fundamental do C-- Strict, que não suporta alocação dinâmica (Heap).
 
 ### GCC (GNU Compiler Collection)
 Utilizado para a etapa final de **Montagem e Linkagem**.
