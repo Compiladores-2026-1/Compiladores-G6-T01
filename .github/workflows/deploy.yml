@@ -1,0 +1,46 @@
+name: Deploy MkDocs to GitHub Pages
+
+# Dispara o workflow em push na branch principal e permite execução manual.
+on:
+    push:
+        branches:
+            - main # Altere para 'master' se essa for a sua branch principal
+    workflow_dispatch:
+
+# Permissão padrão mínima para todos os jobs (somente leitura do repositório).
+permissions:
+    contents: read
+
+# Evita deploys concorrentes na mesma branch, cancelando execuções antigas.
+concurrency:
+    group: mkdocs-pages-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    deploy:
+        # Runner hospedado pelo GitHub.
+        runs-on: ubuntu-latest
+        # Limite de tempo para evitar jobs travados consumindo recursos.
+        timeout-minutes: 10
+        permissions:
+            # Necessário para o mkdocs gh-deploy fazer push na branch gh-pages.
+            contents: write
+        steps:
+            # Baixa o código da branch que disparou o workflow.
+            - uses: actions/checkout@v4
+            - name: Configurar Python
+              uses: actions/setup-python@v5
+              with:
+                  # Fixa a versão para ter builds reproduzíveis.
+                  python-version: "3.12"
+            # Atualiza o instalador e instala versões fixas das dependências de docs.
+            - name: Instalar dependencias
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install mkdocs==1.6.1 mkdocs-material==9.7.6
+            - name: Validar build do site
+              # Falha o pipeline se houver erro de build/links/configuração estrita.
+              run: mkdocs build --strict
+            - name: Deploy para o GitHub Pages
+              # Publica no GitHub Pages via branch gh-pages, limpando arquivos antigos.
+              run: mkdocs gh-deploy --force --clean

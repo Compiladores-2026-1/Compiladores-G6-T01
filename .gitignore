@@ -1,9 +1,4 @@
 # Arquivos gerados e executáveis
-build/
-bin/
-compilador
-lex.yy.c
-*.tab.c
-*.tab.h
-*.output
-*.o
+release/
+debug/
+site/
