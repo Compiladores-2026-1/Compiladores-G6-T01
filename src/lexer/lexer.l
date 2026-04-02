@@ -8,19 +8,20 @@ int line = 1;
 %}
 
 DIGIT [0-9]
-INTNUM {DIGIT}+
-FLOATNUM {DIGIT}+"."{DIGIT}*
+INTEGER_LITERAL {DIGIT}+
+FLOAT_LITERAL {DIGIT}+"."{DIGIT}*
 CHAR_LITERAL \'([^\\\']|\\.)\'
 
 %%
-
-{INTNUM}    {
+/* --- Literais --- */
+{INTEGER_LITERAL}    {
                 yylval.intval = atoi(yytext);
-                return NUM;
+                return INTEGER_LITERAL;
             }
-{FLOATNUM}  {
+
+{FLOAT_LITERAL}  {
                 yylval.floatval = atof(yytext);
-                return NUM;
+                return FLOAT_LITERAL;
             }
 
 {CHAR_LITERAL}  {

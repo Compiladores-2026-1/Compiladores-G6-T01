@@ -3,7 +3,8 @@
 
 enum TokenType
 {
-    NUM = 256,
+    INTEGER_LITERAL = 256,
+    FLOAT_LITERAL,
     CHAR_LITERAL
 };
 
