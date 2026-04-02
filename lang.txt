@@ -5,6 +5,17 @@
     COMMENT_BLOCK
 */
 
+int
+float
+char
+bool
+void
+
+if
+else
+for
+while
+
 1
 10
 1.5

@@ -33,6 +33,11 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 "bool"       { return BOOL; }
 "void"       { return VOID; }
 
+"if"         { return IF; }
+"else"       { return ELSE; }
+"for"        { return FOR; }
+"while"      { return WHILE; }
+
 {INTEGER_LITERAL}    {
                 yylval.intval = atoi(yytext);
                 return INTEGER_LITERAL;

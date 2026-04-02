@@ -3,13 +3,21 @@
 
 enum TokenType
 {
-
+    /* Keywords */
+    /* Types */
     INT = 256,
     FLOAT,
     CHAR,
     BOOL,
     VOID,
 
+    /* Control Flow */
+    IF,
+    ELSE,
+    FOR,
+    WHILE,
+
+    /* Literals */
     IDENTIFIER,
     INTEGER_LITERAL,
     FLOAT_LITERAL,
