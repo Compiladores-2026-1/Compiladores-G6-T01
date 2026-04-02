@@ -2,6 +2,7 @@
 
 %{
 #include <stdio.h>
+#include <stdlib.h>
 #include "lexer/tokens.h"
 
 int line = 1;
@@ -13,7 +14,12 @@ FLOAT_LITERAL {DIGIT}+"."{DIGIT}*
 CHAR_LITERAL \'([^\\\']|\\.)\'
 
 %%
-/* --- Literais --- */
+"int"        { return INT; }
+"float"      { return FLOAT; }
+"char"       { return CHAR; }
+"bool"       { return BOOL; }
+"void"       { return VOID; }
+
 {INTEGER_LITERAL}    {
                 yylval.intval = atoi(yytext);
                 return INTEGER_LITERAL;
