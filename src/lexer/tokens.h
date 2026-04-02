@@ -25,6 +25,11 @@ enum TokenType
     /* Main */
     MAIN,
 
+    /* Operators */
+    AND,
+    OR,
+    NOT,
+
     /* Literals */
     IDENTIFIER,
     INTEGER_LITERAL,

@@ -38,11 +38,15 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 "for"        { return FOR; }
 "while"      { return WHILE; }
 
-"main"       { return MAIN; }
-
 "break"      { return BREAK; }
 "continue"   { return CONTINUE; }
 "return"     { return RETURN; }
+
+"main"       { return MAIN; }
+
+"and"        { return AND; }
+"or"         { return OR; }
+"not"        { return NOT; }
 
 {INTEGER_LITERAL}    {
                 yylval.intval = atoi(yytext);

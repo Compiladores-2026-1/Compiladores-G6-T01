@@ -16,8 +16,19 @@ else
 for
 while
 
+break
+continue
+return
+
+main
+
+and
+or
+not
+
 1
 10
 1.5
 'a'
 string
+
