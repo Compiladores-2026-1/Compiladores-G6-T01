@@ -48,6 +48,14 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 "or"         { return OR; }
 "not"        { return NOT; }
 
+"true" { yylval.intval = 1; return BOOL_LITERAL; }
+"false" { yylval.intval = 0; return BOOL_LITERAL; }
+
+{IDENTIFIER}    {
+                    yylval.strval = strdup(yytext);
+                    return IDENTIFIER;
+                }
+
 {INTEGER_LITERAL}    {
                 yylval.intval = atoi(yytext);
                 return INTEGER_LITERAL;
@@ -61,11 +69,6 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 {CHAR_LITERAL}  {
                     yylval.charval = yytext[1];
                     return CHAR_LITERAL;
-                }
-
-{IDENTIFIER}    {
-                    yylval.strval = strdup(yytext);
-                    return IDENTIFIER;
                 }
 
 %%

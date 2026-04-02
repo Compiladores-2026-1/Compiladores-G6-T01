@@ -34,7 +34,8 @@ enum TokenType
     IDENTIFIER,
     INTEGER_LITERAL,
     FLOAT_LITERAL,
-    CHAR_LITERAL
+    CHAR_LITERAL,
+    BOOL_LITERAL
 };
 
 typedef union
