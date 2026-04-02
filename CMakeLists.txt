@@ -108,7 +108,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     enable_testing()
 
     add_executable(testes
-        tests/test_parser.cpp
+        tests/teste_lexico.cpp
     )
 
     add_dependencies(testes compilador_lib)
@@ -120,6 +120,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     target_include_directories(testes PRIVATE
         ${CMAKE_CURRENT_BINARY_DIR}
+        ${SRC_DIR}
     )
 
     set_target_properties(testes PROPERTIES

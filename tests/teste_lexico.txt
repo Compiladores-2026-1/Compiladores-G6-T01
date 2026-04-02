@@ -1,32 +1,8 @@
-// Teste de tokens do lexer
-
 int main() {
     int x = 10;
-    float y = 3.14;
-    char c = 'a';
-    bool flag = true;
-
     x++;
-    y += 2.0;
-
-    if (x >= 10 and not false) {
-        y = y / 2.0;
-    } else {
-        y = y * 5.0;
+    if(x > 5) {
+        x += 2;
     }
-
-    /* comentario de bloco
-       com mais de uma linha */
-    for (x = 0; x < 5; x++) {
-        continue;
-    }
-
-    while (x != 0 or flag) {
-        break;
-    }
-
-    return 0;
+    return x;
 }
-
-identificador_1
-outroIdent123
