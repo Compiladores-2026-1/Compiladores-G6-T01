@@ -9,6 +9,8 @@ int line = 1;
 %}
 
 DIGIT [0-9]
+LETTER [a-zA-Z_]
+IDENTIFIER {LETTER}({LETTER}|{DIGIT})*
 INTEGER_LITERAL {DIGIT}+
 FLOAT_LITERAL {DIGIT}+"."{DIGIT}*
 CHAR_LITERAL \'([^\\\']|\\.)\'
@@ -33,6 +35,11 @@ CHAR_LITERAL \'([^\\\']|\\.)\'
 {CHAR_LITERAL}  {
                     yylval.charval = yytext[1];
                     return CHAR_LITERAL;
+                }
+
+{IDENTIFIER}    {
+                    yylval.strval = strdup(yytext);
+                    return IDENTIFIER;
                 }
 
 %%

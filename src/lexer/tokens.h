@@ -10,6 +10,7 @@ enum TokenType
     BOOL,
     VOID,
 
+    IDENTIFIER,
     INTEGER_LITERAL,
     FLOAT_LITERAL,
     CHAR_LITERAL
@@ -20,7 +21,7 @@ typedef union
     int intval;
     float floatval;
     char charval;
-    char *str;
+    char *strval;
 } YYSTYPE;
 
 extern YYSTYPE yylval;
