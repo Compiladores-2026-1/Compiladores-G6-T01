@@ -55,7 +55,8 @@
             },
             "presentation": {
                 "focus": true
-            }
+            },
+            "problemMatcher": ["$gcc"]
         },
         {
             "label": "CMake: compilar release",

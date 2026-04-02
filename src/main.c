@@ -1,18 +1,24 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-int yyparse(void);
+/* Declaração da função do lexer gerada pelo Flex */
+extern int yylex(void);
+/* Variável global do Flex para o texto do token atual */
+extern char *yytext;
+/* Declaração de yylval */
 
 int main(void)
 {
-    printf("Aperte Ctrl + D para sair.\n");
-    int parse_result = yyparse();
+    int token;
 
-    if (parse_result == 0)
-    {
-        puts("Analise concluida com sucesso.");
-        return 0;
+    printf("Digite a entrada para testar o lexer (pressione Ctrl+D para sair):\n");
+
+    /* Loop para processar tokens até o fim da entrada (EOF) */
+    while ((token = yylex()) != 0)
+    { /* yylex() retorna 0 no EOF */
+        printf("Token: %d, Texto: '%s'\n", token, yytext);
     }
 
-    puts("Falha na analise.");
-    return 1;
+    printf("Fim da análise léxica.\n");
+    return 0;
 }

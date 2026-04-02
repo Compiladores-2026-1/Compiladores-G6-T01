@@ -1,8 +1,17 @@
 %option noyywrap
 
+%{
+#include <stdio.h>
+#include "lexer/tokens.h"
+
+int line = 1;
+%}
+
+DIGIT [0-9]
+INTNUM {DIGIT}+
+
 %%
 
-[ \t\r\n]+ ;
-.          ;
+{INTNUM} { return NUM; }
 
 %%

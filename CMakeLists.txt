@@ -57,6 +57,7 @@ FLEX_TARGET(
     Lexer
     ${LEXER_L}
     ${CMAKE_CURRENT_BINARY_DIR}/lexer.c
+    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/tokens.h
 )
 
 ADD_FLEX_BISON_DEPENDENCY(Lexer Parser)
@@ -71,6 +72,7 @@ add_library(compilador_lib
 
 target_include_directories(compilador_lib PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${SRC_DIR}
 )
 
 # Flex lib (yywrap)
