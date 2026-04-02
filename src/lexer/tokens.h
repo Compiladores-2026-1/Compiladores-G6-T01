@@ -17,6 +17,11 @@ enum TokenType
     FOR,
     WHILE,
 
+    /* Statements */
+    BREAK,
+    CONTINUE,
+    RETURN,
+
     /* Literals */
     IDENTIFIER,
     INTEGER_LITERAL,
