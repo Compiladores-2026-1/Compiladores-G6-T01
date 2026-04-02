@@ -14,8 +14,19 @@ IDENTIFIER {LETTER}({LETTER}|{DIGIT})*
 INTEGER_LITERAL {DIGIT}+
 FLOAT_LITERAL {DIGIT}+"."{DIGIT}*
 CHAR_LITERAL \'([^\\\']|\\.)\'
+WHITESPACE [ \t\r]+
+NEWLINE \n
+COMMENT "//".*
+COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 
 %%
+
+{WHITESPACE}    { /* Ignore whitespace */ }
+{NEWLINE}       { line++; }
+
+{COMMENT}       { /* Ignore comments */ }
+{COMMENT_BLOCK} { /* Ignore block comments */ }
+
 "int"        { return INT; }
 "float"      { return FLOAT; }
 "char"       { return CHAR; }
