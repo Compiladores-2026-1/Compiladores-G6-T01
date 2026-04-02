@@ -3,6 +3,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lexer/tokens.h"
 
 int line = 1;
@@ -51,10 +52,38 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 "true" { yylval.intval = 1; return BOOL_LITERAL; }
 "false" { yylval.intval = 0; return BOOL_LITERAL; }
 
-{IDENTIFIER}    {
-                    yylval.strval = strdup(yytext);
-                    return IDENTIFIER;
-                }
+"++"         { return INC; }
+"--"         { return DEC; }
+
+"+="         { return PLUSEQ; }
+"-="         { return MINUSEQ; }
+"*="         { return MULTEQ; }
+"/="         { return DIVEQ; }
+"%="         { return MODEQ; }
+
+">="         { return GE; }
+"<="         { return LE; }
+"=="         { return EQ; }
+"!="         { return NEQ; }
+
+">"          { return GT; }
+"<"          { return LT; }
+"="          { return ASSIGN; }
+
+"+"          { return PLUS; }
+"-"          { return MINUS; }
+"*"          { return MULT; }
+"/"          { return DIV; }
+"%"          { return MOD; }
+
+"!"          { return NOT_OP; }
+
+"("          { return LPAREN; }
+")"          { return RPAREN; }
+"{"          { return LBRACE; }
+"}"          { return RBRACE; }
+";"          { return SEMICOLON; }
+","          { return COMMA; }
 
 {INTEGER_LITERAL}    {
                 yylval.intval = atoi(yytext);
@@ -70,5 +99,14 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
                     yylval.charval = yytext[1];
                     return CHAR_LITERAL;
                 }
+
+{IDENTIFIER}    {
+                    yylval.strval = strdup(yytext);
+                    return IDENTIFIER;
+                }
+
+. {
+    fprintf(stderr, "Erro lexico: '%s' na linha %d\n", yytext, line);
+}
 
 %%

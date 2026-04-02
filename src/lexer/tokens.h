@@ -30,6 +30,42 @@ enum TokenType
     OR,
     NOT,
 
+    /* Arithmetic Operators */
+    PLUS,
+    MINUS,
+    MULT,
+    DIV,
+    MOD,
+
+    /* Assignment Operators */
+    ASSIGN,
+    PLUSEQ,
+    MINUSEQ,
+    MULTEQ,
+    DIVEQ,
+    MODEQ,
+
+    /* Comparison Operators */
+    EQ,
+    NEQ,
+    LT,
+    GT,
+    LE,
+    GE,
+
+    /* Unary Operators */
+    INC,
+    DEC,
+    NOT_OP,
+
+    /* Delimiters */
+    LPAREN,
+    RPAREN,
+    LBRACE,
+    RBRACE,
+    SEMICOLON,
+    COMMA,
+
     /* Literals */
     IDENTIFIER,
     INTEGER_LITERAL,
