@@ -38,6 +38,8 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 "for"        { return FOR; }
 "while"      { return WHILE; }
 
+"main"       { return MAIN; }
+
 "break"      { return BREAK; }
 "continue"   { return CONTINUE; }
 "return"     { return RETURN; }

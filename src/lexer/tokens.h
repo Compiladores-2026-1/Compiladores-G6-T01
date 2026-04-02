@@ -22,6 +22,9 @@ enum TokenType
     CONTINUE,
     RETURN,
 
+    /* Main */
+    MAIN,
+
     /* Literals */
     IDENTIFIER,
     INTEGER_LITERAL,
