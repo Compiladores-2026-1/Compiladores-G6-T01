@@ -1,0 +1,98 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: configurar debug",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["-S", ".", "-B", "debug", "-DCMAKE_BUILD_TYPE=Debug"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "focus": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "CMake: compilar debug",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "debug", "--parallel"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "dependsOn": "CMake: configurar debug",
+            "presentation": {
+                "focus": true
+            }
+        },
+        {
+            "label": "CMake: limpar debug",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "debug", "--target", "clean"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": ["$gcc"],
+            "presentation": {
+                "focus": true
+            }
+        },
+        {
+            "label": "CMake: configurar release",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["-S", ".", "-B", "release", "-DCMAKE_BUILD_TYPE=Release"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "focus": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "CMake: compilar release",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "release", "--parallel"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": ["$gcc"],
+            "dependsOn": "CMake: configurar release",
+            "presentation": {
+                "focus": true
+            }
+        },
+        {
+            "label": "CMake: limpar release",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "release", "--target", "clean"],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "focus": true
+            }
+        },
+        {
+            "label": "CMake: limpar tudo",
+            "type": "shell",
+            "command": "rm",
+            "args": ["-rf", "debug", "release"],
+            "problemMatcher": [],
+            "presentation": {
+                "focus": true
+            }
+        }
+    ]
+}
