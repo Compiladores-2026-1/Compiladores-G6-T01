@@ -92,9 +92,15 @@ Para reproduzir este relatório no ambiente WSL:
 1. **Clonar e Acessar:** `cd ~/Compiladores-G6-T01`
 2. **Criar Branch de Trabalho:** `git checkout -b feature/testes-e-relatorio`
 3. **Limpar e Compilar:**
-   ```bash
-   rm -rf build && mkdir build && cd build
-   cmake ..
-   make
+
+```bash
+rm -rf debug && mkdir debug && cd debug
+cmake ..
+make
+```
+
 4.Executar Testes:
-    ./testes
+
+```sh
+./testes
+```
