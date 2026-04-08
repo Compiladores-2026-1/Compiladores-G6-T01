@@ -70,6 +70,7 @@ TEST(LexerTest, IgnoraComentarios) {
     // O Lexer deve saltar o comentário e identificar o próximo identificador 'x'
     EXPECT_EQ(yylex(), IDENTIFIER);
 }
+```
 
 ## 5. Resultados e Comportamento do Sistema
 O sistema apresentou **100% de aproveitamento** nos testes unitários. O comportamento observado confirmou a robustez da análise léxica e a correta integração com o Google Test.
