@@ -1,4 +1,15 @@
 {
+    "files.associations": {
+        "*.cmm": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.exclusionPolicy": "checkFilesAndFolders",
+    "C_Cpp.files.exclude": {
+        "**/*.cmm": true
+    },
+    "C_Cpp.codeAnalysis.exclude": {
+        "**/*.cmm": true
+    },
     "cSpell.words": [
         "stdlib",
         "noyywrap",
