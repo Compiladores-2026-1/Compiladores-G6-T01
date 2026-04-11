@@ -1,0 +1,29 @@
+{
+    "cSpell.words": [
+        "stdlib",
+        "noyywrap",
+        "yylval",
+        "intval",
+        "floatval",
+        "charval",
+        "strval",
+        "yylex",
+        "yyerror",
+        "yylineno",
+        "PLUSEQ",
+        "MINUSEQ",
+        "MULTEQ",
+        "DIVEQ",
+        "MODEQ",
+        "MULT",
+        "LPAREN",
+        "RPAREN",
+        "atoi",
+        "atof",
+        "strdup",
+        "yytext",
+        "fprintf",
+        "yyin",
+        "yyparse"
+    ]
+}
