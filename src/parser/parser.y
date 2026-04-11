@@ -11,12 +11,13 @@ void yyerror(const char *s);
 %union {
     int intval;
     float floatval;
+    double doubleval;
     char charval;
     char *strval;
 }
 
 /* Tokens */
-%token INT FLOAT CHAR BOOL VOID
+%token INT FLOAT DOUBLE CHAR BOOL VOID
 %token IF ELSE FOR WHILE
 %token BREAK CONTINUE RETURN
 %token MAIN
@@ -31,6 +32,7 @@ void yyerror(const char *s);
 %token <strval> IDENTIFIER
 %token <intval> INTEGER_LITERAL
 %token <floatval> FLOAT_LITERAL
+%token <doubleval> DOUBLE_LITERAL
 %token <charval> CHAR_LITERAL
 %token <intval> BOOL_LITERAL
 
@@ -103,6 +105,7 @@ main_function
 type_specifier
     : INT   { printf("[TYPE:int]\n"); }
     | FLOAT { printf("[TYPE:float]\n"); }
+    | DOUBLE { printf("[TYPE:double]\n"); }
     | CHAR  { printf("[TYPE:char]\n"); }
     | BOOL  { printf("[TYPE:bool]\n"); }
     | VOID  { printf("[TYPE:void]\n"); }
@@ -402,6 +405,9 @@ primary_expression
     }
     | FLOAT_LITERAL {
         printf("[FLOAT: %f]\n", $1);
+    }
+    | DOUBLE_LITERAL {
+        printf("[DOUBLE: %lf]\n", $1);
     }
     | BOOL_LITERAL {
         printf("[BOOL: %d]\n", $1);

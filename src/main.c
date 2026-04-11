@@ -36,6 +36,8 @@ static const char *token_to_string(int token)
         return "INT";
     case FLOAT:
         return "FLOAT";
+    case DOUBLE:
+        return "DOUBLE";
     case CHAR:
         return "CHAR";
     case BOOL:
@@ -122,6 +124,8 @@ static const char *token_to_string(int token)
         return "INTEGER_LITERAL";
     case FLOAT_LITERAL:
         return "FLOAT_LITERAL";
+    case DOUBLE_LITERAL:
+        return "DOUBLE_LITERAL";
     case CHAR_LITERAL:
         return "CHAR_LITERAL";
     case BOOL_LITERAL:
