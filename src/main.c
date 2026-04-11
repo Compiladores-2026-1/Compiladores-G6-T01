@@ -148,7 +148,7 @@ static int run_lexer_mode(void)
     }
 
     printf("\n");
-    printf("Fim da analise lexica.\n");
+    printf("Fim da analise léxica.\n");
     return 0;
 }
 
@@ -158,11 +158,11 @@ static int run_parser_mode(void)
 
     if (parse_result == 0)
     {
-        printf("Fim da analise sintatica.\n");
+        printf("Fim da analise sintática.\n");
         return 0;
     }
 
-    fprintf(stderr, "Falha na analise sintatica.\n");
+    fprintf(stderr, "Falha na analise sintática.\n");
     return 1;
 }
 
@@ -210,7 +210,7 @@ int main(int argc, char **argv)
 
         if (input_path != NULL)
         {
-            fprintf(stderr, "Erro: informe no maximo um arquivo de entrada.\n");
+            fprintf(stderr, "Erro: informe no máximo um arquivo de entrada.\n");
             print_usage(argv[0]);
             return 1;
         }
