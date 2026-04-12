@@ -62,7 +62,14 @@ Após o sucesso da compilação, o executável estará pronto para uso. Para rod
 ./debug/compilador
 ```
 
-> **Testes Automatizados:** O nosso `CMakeLists.txt` possui integração com o `GoogleTest`. Ao compilar no modo Debug, os testes são ativados automaticamente.
+> **Testes Automatizados:** O nosso `CMakeLists.txt` possui integração com o `GoogleTest`. Ao compilar no modo `Debug`, os testes podem ser adicionados/compilados e registrados, mas **não são executados automaticamente**.
+> 
+> Para executá-los, rode:
+> ```bash
+> ctest --test-dir debug --output-on-failure
+> ```
+> 
+> Alternativamente, você também pode executar diretamente o binário de testes gerado na pasta `debug/`, caso aplicável.
 
 ---
 
