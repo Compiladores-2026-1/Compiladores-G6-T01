@@ -85,9 +85,9 @@ export PATH="$HOME/.local/bin:$PATH"
 1. **Instale as dependências (MkDocs e plugins):**
  Na raiz do projeto, execute:
    ```bash
-   poetry install --no-root
+   poetry install --with docs --no-root
    ```
-   *(Nota: Se houver a configuração `package-mode = false` no `pyproject.toml`, a flag `--no-root` não é necessária).*
+   *(Nota: O grupo `docs` precisa ser instalado explicitamente para disponibilizar o `mkdocs`. Se houver a configuração `package-mode = false` no `pyproject.toml`, a flag `--no-root` pode ser omitida, mas mantenha a flag `--with docs`).*
 
 2. **Inicie o servidor local:**
    ```bash
