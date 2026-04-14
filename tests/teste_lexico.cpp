@@ -11,6 +11,7 @@ extern "C"
     int yylex_destroy(void);
     YY_BUFFER_STATE yy_scan_string(const char *str);
     void yy_delete_buffer(YY_BUFFER_STATE buffer);
+    extern char *yytext; // Importação da string lida atual para poder inspecioná-la nos testes
 }
 
 TEST(LexerTest, ReconheceSequenciaBasica)
@@ -170,6 +171,46 @@ TEST(LexerTest, IgnoraComentarios) {
     EXPECT_EQ(yylex(), ASSIGN);
     EXPECT_EQ(yylex(), INTEGER_LITERAL);
     EXPECT_EQ(yylex(), SEMICOLON);
+
+    yy_delete_buffer(buffer);
+    yylex_destroy();
+}
+
+// Teste de Tokens Incorretos (Sad Path)
+TEST(LexerTest, IdentificaTokensIncorretos) {
+    // Injetamos dois símbolos não suportados pela linguagem C-- Strict: @ e $
+    auto buffer = yy_scan_string("int @ $ x;");
+    
+    EXPECT_EQ(yylex(), INT);
+    
+    // O Lexer deve avisar o teste sobre a "sujeira" e apontar o caractere exato
+    EXPECT_EQ(yylex(), UNKNOWN_TOKEN); 
+    EXPECT_STREQ(yytext, "@");
+
+    EXPECT_EQ(yylex(), UNKNOWN_TOKEN);
+    EXPECT_STREQ(yytext, "$");
+    
+    // E deve conseguir continuar analisando o que é válido em seguida
+    EXPECT_EQ(yylex(), IDENTIFIER); // Pega o 'x'
+    EXPECT_EQ(yylex(), SEMICOLON); // Pega o ';'
+
+    yy_delete_buffer(buffer);
+    yylex_destroy();
+}
+
+// Teste de Borda: Token Incorreto Colado ao Fim do Arquivo (EOF)
+TEST(LexerTest, TokenIncorretoNoFinal) {
+    auto buffer = yy_scan_string("int x @");
+    
+    EXPECT_EQ(yylex(), INT);
+    EXPECT_EQ(yylex(), IDENTIFIER);
+    
+    // Testa se o compilador sobrevive sem Segmentation Fault ao esbarrar num erro no apagar das luzes
+    EXPECT_EQ(yylex(), UNKNOWN_TOKEN);
+    EXPECT_STREQ(yytext, "@");
+    
+    // Lexer deve encerrar com segurança retornando 0
+    EXPECT_EQ(yylex(), 0);
 
     yy_delete_buffer(buffer);
     yylex_destroy();

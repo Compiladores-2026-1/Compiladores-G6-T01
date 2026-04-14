@@ -71,7 +71,10 @@ enum TokenType
     INTEGER_LITERAL,
     FLOAT_LITERAL,
     CHAR_LITERAL,
-    BOOL_LITERAL
+    BOOL_LITERAL,
+
+    /* Error Token */
+    UNKNOWN_TOKEN
 };
 
 typedef union
