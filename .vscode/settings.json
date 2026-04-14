@@ -35,6 +35,9 @@
         "yytext",
         "fprintf",
         "yyin",
-        "yyparse"
+        "yyparse",
+        "doubleval",
+        "strtof",
+        "strtod"
     ]
 }

@@ -116,6 +116,7 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 
 . {
     fprintf(stderr, "Erro léxico: '%s' na linha %d\n", yytext, line);
+    return UNKNOWN_TOKEN;
 }
 
 %%
