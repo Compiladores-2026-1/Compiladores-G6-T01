@@ -1,0 +1,43 @@
+{
+    "files.associations": {
+        "*.cmm": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.exclusionPolicy": "checkFilesAndFolders",
+    "C_Cpp.files.exclude": {
+        "**/*.cmm": true
+    },
+    "C_Cpp.codeAnalysis.exclude": {
+        "**/*.cmm": true
+    },
+    "cSpell.words": [
+        "stdlib",
+        "noyywrap",
+        "yylval",
+        "intval",
+        "floatval",
+        "charval",
+        "strval",
+        "yylex",
+        "yyerror",
+        "yylineno",
+        "PLUSEQ",
+        "MINUSEQ",
+        "MULTEQ",
+        "DIVEQ",
+        "MODEQ",
+        "MULT",
+        "LPAREN",
+        "RPAREN",
+        "atoi",
+        "atof",
+        "strdup",
+        "yytext",
+        "fprintf",
+        "yyin",
+        "yyparse",
+        "doubleval",
+        "strtof",
+        "strtod"
+    ]
+}

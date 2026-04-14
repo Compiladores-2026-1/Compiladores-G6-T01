@@ -13,7 +13,10 @@ DIGIT [0-9]
 LETTER [a-zA-Z_]
 IDENTIFIER {LETTER}({LETTER}|{DIGIT})*
 INTEGER_LITERAL {DIGIT}+
-FLOAT_LITERAL {DIGIT}+"."{DIGIT}*
+EXPONENT [eE][+-]?{DIGIT}+
+FRACTION ({DIGIT}+"."{DIGIT}*|"."{DIGIT}+)
+DOUBLE_LITERAL ({FRACTION}({EXPONENT})?|{DIGIT}+{EXPONENT})
+FLOAT_LITERAL ({DOUBLE_LITERAL}[fF])
 CHAR_LITERAL \'([^\\\']|\\.)\'
 WHITESPACE [ \t\r]+
 NEWLINE \n
@@ -30,6 +33,7 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
 
 "int"        { return INT; }
 "float"      { return FLOAT; }
+"double"     { return DOUBLE; }
 "char"       { return CHAR; }
 "bool"       { return BOOL; }
 "void"       { return VOID; }
@@ -91,8 +95,13 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
             }
 
 {FLOAT_LITERAL}  {
-                yylval.floatval = atof(yytext);
+                yylval.floatval = strtof(yytext, NULL);
                 return FLOAT_LITERAL;
+            }
+
+{DOUBLE_LITERAL}  {
+                yylval.doubleval = strtod(yytext, NULL);
+                return DOUBLE_LITERAL;
             }
 
 {CHAR_LITERAL}  {
@@ -106,7 +115,7 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
                 }
 
 . {
-    fprintf(stderr, "Erro lexico: '%s' na linha %d\n", yytext, line);
+    fprintf(stderr, "Erro léxico: '%s' na linha %d\n", yytext, line);
     return UNKNOWN_TOKEN;
 }
 

@@ -1,0 +1,155 @@
+/*
+ * Arquivo de teste abrangente para o parser.
+ * Evita recursos ainda não suportados (como #include e literais de string).
+ */
+
+int g1 = 1, g2, g3 = 3;
+float gf = 1.5f;
+double gd = 2.5;
+char gc = 'Z';
+bool gb = false;
+
+int soma(int a, int b);
+float media3(float a, float b, float c);
+double media2(double a, double b);
+bool eh_par(int x);
+void mostrar_resultados(int x, int y);
+
+int soma(int a, int b)
+{
+    return a + b;
+}
+
+float media3(float a, float b, float c)
+{
+    return (a + b + c) / 3.0f;
+}
+
+double media2(double a, double b)
+{
+    return (a + b) / 2.0;
+}
+
+bool eh_par(int x)
+{
+    return x % 2 == 0;
+}
+
+void mostrar_resultados(int x, int y)
+{
+    int z = x + y;
+    z++;
+    z--;
+    return;
+}
+
+int main()
+{
+    int local_fn_decl(int p);
+
+    int i = 0, j = 0, k = 10;
+    int n1 = 10;
+    int n2 = 20;
+    int total = 0;
+
+    float f1 = 7.5f;
+    float f2 = .5f;
+    double d1 = 8.0;
+    double d2 = 1e3;
+    char c1 = 'a';
+    bool flag = true;
+
+    int resultado_soma = soma(n1, n2);
+    float resultado_media_f = media3(f1, 8.0f, 9.5f);
+    double resultado_media_d = media2(d1, d2);
+
+    mostrar_resultados(resultado_soma, n1);
+
+    i = 1;
+    i += 2;
+    i -= 1;
+    i *= 3;
+    i /= 2;
+    i %= 2;
+
+    ++i;
+    --i;
+    j++;
+    j--;
+
+    if (flag and not false)
+    {
+        total = total + 1;
+    }
+    else
+    {
+        total = total - 1;
+    }
+
+    if (!false or gb)
+    {
+        total = total + 1;
+    }
+
+    if (resultado_soma > n1)
+    {
+        total = total + 1;
+    }
+    if (resultado_soma >= n2)
+    {
+        total = total + 1;
+    }
+    if (resultado_soma < n2)
+    {
+        total = total + 1;
+    }
+    if (resultado_soma <= n2)
+    {
+        total = total + 1;
+    }
+    if (resultado_soma == n2)
+    {
+        total = total + 1;
+    }
+    if (resultado_soma != n1)
+    {
+        total = total + 1;
+    }
+
+    if (eh_par(resultado_soma))
+        if (n1 < n2)
+            total = total + 1;
+        else
+            total = total - 1;
+
+    while (k > 0)
+    {
+        k--;
+        if (k == 7)
+        {
+            continue;
+        }
+        if (k == 2)
+        {
+            break;
+        }
+        total += 1;
+    }
+
+    for (int t = 0; t < 5; t++)
+    {
+        total = total + t;
+    }
+
+    for (j = 5; j > 0; j--)
+    {
+        total = total - 1;
+    }
+
+    if (c1 == 'a')
+    {
+        total = total + 1;
+    }
+
+    return total;
+}

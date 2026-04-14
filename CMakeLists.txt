@@ -57,7 +57,6 @@ FLEX_TARGET(
     Lexer
     ${LEXER_L}
     ${CMAKE_CURRENT_BINARY_DIR}/lexer.c
-    DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/tokens.h
 )
 
 ADD_FLEX_BISON_DEPENDENCY(Lexer Parser)
@@ -86,6 +85,10 @@ endif()
 # ========================
 add_executable(compilador ${MAIN_C})
 target_link_libraries(compilador PRIVATE compilador_lib)
+target_include_directories(compilador PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${SRC_DIR}
+)
 set_target_properties(compilador PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
@@ -108,7 +111,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     enable_testing()
 
     add_executable(testes
-        tests/teste_lexico.cpp
+        tests/lexer/teste_lexico.cpp
     )
 
     add_dependencies(testes compilador_lib)
