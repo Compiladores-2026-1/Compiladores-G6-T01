@@ -17,6 +17,7 @@ void yyerror(const char *s);
 }
 
 /* Tokens */
+%token UNKNOWN_TOKEN
 %token INT FLOAT DOUBLE CHAR BOOL VOID
 %token IF ELSE FOR WHILE
 %token BREAK CONTINUE RETURN
@@ -414,6 +415,9 @@ primary_expression
     }
     | CHAR_LITERAL {
         printf("[CHAR]\n");
+    }
+    | UNKNOWN_TOKEN {
+        yyerror("Token desconhecido ou caractere inválido detectado.");
     }
     | LPAREN expression RPAREN
     ;
