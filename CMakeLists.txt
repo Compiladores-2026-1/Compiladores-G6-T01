@@ -112,6 +112,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     add_executable(testes
         tests/lexer/teste_lexico.cpp
+        tests/parser/teste_sintatico_parser.cpp
     )
 
     add_dependencies(testes compilador_lib)
