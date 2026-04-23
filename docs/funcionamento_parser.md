@@ -96,9 +96,10 @@ O parser utiliza a seguinte união de tipos para armazenar valores dos tokens:
 | `GT` | `>` | Maior que |
 | `LE` | `<=` | Menor ou igual que |
 | `GE` | `>=` | Maior ou igual que |
-| `AND` | `&&` | E lógico |
-| `OR` | \|\| | OU lógico |
-| `NOT` | `!` | NÃO lógico |
+| `AND` | `and` | E lógico |
+| `OR` | `or` | OU lógico |
+| `NOT` | `not` | NÃO lógico |
+| `NOT_OP` | `!` | Negação lógica |
 
 ### 3.5. Tokens de Incremento e Decremento
 
