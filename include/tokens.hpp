@@ -1,10 +1,8 @@
-#ifndef TOKENS_H
-#define TOKENS_H
+#pragma once
 
 /*
  * Fonte única de tokens e YYSTYPE: parser.h gerado pelo Bison.
  * Mantemos este wrapper para preservar includes existentes no projeto.
  */
-#include "parser.hpp"
 
-#endif
+#include "parser.hpp"
