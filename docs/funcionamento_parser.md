@@ -611,12 +611,12 @@ O parser utiliza instruções **matched** e **unmatched** para resolver a ambigu
 
 ```bnf
 matched_statement
-    : IF LPAREN expr RPAREN matched_statement ELSE matched_statement
+    : IF LPAREN expression RPAREN matched_statement ELSE matched_statement
     ;
 
 unmatched_statement
-    : IF LPAREN expr RPAREN statement
-    | IF LPAREN expr RPAREN matched_statement ELSE unmatched_statement
+    : IF LPAREN expression RPAREN statement
+    | IF LPAREN expression RPAREN matched_statement ELSE unmatched_statement
     ;
 ```
 
