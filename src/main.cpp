@@ -1,64 +1,93 @@
 #include <iostream>
 #include <string>
-#include <cstdio> // Para FILE*, stdin, fopen, perror
+#include <cstdio>
 
-#include "lexer_runner.hpp"
-#include "parser_runner.hpp"
+#include "runners.hpp"
 
-// Ponteiro para o arquivo de entrada, exigido pelo Flex
 extern FILE *yyin;
 
-// Uso de 'enum class' (fortemente tipado do C++11 em diante)
-enum class ExecutionMode
+typedef enum
 {
-    LEXER,
-    PARSER
-};
+    MODE_LEXER,
+    MODE_PARSER,
+    MODE_AST,
+    MODE_SEMANTIC,
+    MODE_TAC,
+    MODE_OPT,
+    MODE_CODEGEN
+} ExecutionMode;
 
 static void print_usage(const std::string &program_name)
 {
-    std::cerr << "Uso: " << program_name << " <--lexer | --parser> [arquivo_entrada]\n"
+    std::cerr << "Uso: " << program_name << " <--lexer | --parser | --ast | --semantic | --tac | --opt | --codegen> [--symtable] [arquivo_entrada]\n"
               << "Exemplos:\n"
-              << "  " << program_name << " --parser ./tests/parser/teste_parser.txt\n"
-              << "  " << program_name << " --lexer ./tests/parser/teste_parser.txt\n";
+              << "  " << program_name << " --opt ./tests/parser/arquivo_entrada.cmm\n"
+              << "  " << program_name << " --semantic --symtable arquivo_entrada.cmm\n";
 }
 
 int main(int argc, char **argv)
 {
-    ExecutionMode mode = ExecutionMode::LEXER;
-    bool mode_defined = false;
-    std::string input_path = "";
-    FILE *input = stdin;
-    std::string program_name = argv[0];
+    ExecutionMode mode = MODE_LEXER; // Valor padrão, será sobrescrito se uma flag de modo for fornecida
 
-    // Processamento de Argumentos com C++ std::string
+    bool mode_defined = false;   // Para garantir que o usuário forneça exatamente uma flag de modo
+    bool debug_symtable = false; // Para controlar a impressão da tabela de símbolos durante as fases de semântica, TAC, otimização e geração de código
+
+    std::string input_path = ""; // Caminho do arquivo de entrada, se fornecido. Se vazio, lerá da entrada padrão.
+    FILE *input = stdin;         // Ponteiro para o arquivo de entrada, inicializado para stdin
+
+    std::string program_name = argv[0]; // Nome do programa, usado para mensagens de erro e uso
+
+    // Processar os argumentos de linha de comando
     for (int i = 1; i < argc; ++i)
     {
         std::string arg = argv[i];
 
         if (arg == "--lexer")
         {
-            if (mode_defined && mode != ExecutionMode::LEXER)
-            {
-                std::cerr << "Erro: use apenas uma flag de modo.\n";
-                print_usage(program_name);
-                return 1;
-            }
-            mode = ExecutionMode::LEXER;
+            mode = MODE_LEXER;
+            mode_defined = true;
+            continue;
+        }
+        if (arg == "--parser")
+        {
+            mode = MODE_PARSER;
+            mode_defined = true;
+            continue;
+        }
+        if (arg == "--ast")
+        {
+            mode = MODE_AST;
+            mode_defined = true;
+            continue;
+        }
+        if (arg == "--semantic")
+        {
+            mode = MODE_SEMANTIC;
+            mode_defined = true;
+            continue;
+        }
+        if (arg == "--tac")
+        {
+            mode = MODE_TAC;
+            mode_defined = true;
+            continue;
+        }
+        if (arg == "--opt")
+        {
+            mode = MODE_OPT;
+            mode_defined = true;
+            continue;
+        }
+        if (arg == "--codegen")
+        {
+            mode = MODE_CODEGEN;
             mode_defined = true;
             continue;
         }
 
-        if (arg == "--parser")
+        if (arg == "--symtable")
         {
-            if (mode_defined && mode != ExecutionMode::PARSER)
-            {
-                std::cerr << "Erro: use apenas uma flag de modo.\n";
-                print_usage(program_name);
-                return 1;
-            }
-            mode = ExecutionMode::PARSER;
-            mode_defined = true;
+            debug_symtable = true;
             continue;
         }
 
@@ -71,7 +100,7 @@ int main(int argc, char **argv)
 
         if (!input_path.empty())
         {
-            std::cerr << "Erro: informe no maximo um arquivo de entrada.\n";
+            std::cerr << "Erro: informe no máximo um arquivo de entrada.\n";
             print_usage(program_name);
             return 1;
         }
@@ -79,14 +108,15 @@ int main(int argc, char **argv)
         input_path = arg;
     }
 
+    // Verificar se uma flag de modo foi fornecida
     if (!mode_defined)
     {
-        std::cerr << "Erro: informe uma flag de modo (--lexer ou --parser).\n";
+        std::cerr << "Erro: informe uma flag de modo.\n";
         print_usage(program_name);
         return 1;
     }
 
-    // Configuração do Arquivo de Entrada
+    // Abrir o arquivo de entrada, se um caminho for fornecido
     if (!input_path.empty())
     {
         input = fopen(input_path.c_str(), "r");
@@ -97,18 +127,37 @@ int main(int argc, char **argv)
         }
     }
 
+    // Configurar yyin para ler do arquivo de entrada ou da entrada padrão
     yyin = input;
 
-    if (input == stdin)
+    // Executar o modo selecionado
+    int exit_code = 1;
+    switch (mode)
     {
-        std::cout << "Digite a entrada para testar o "
-                  << (mode == ExecutionMode::LEXER ? "lexer" : "parser")
-                  << " (Ctrl+D para sair):\n";
+    case MODE_LEXER:
+        exit_code = run_lexer_mode();
+        break;
+    case MODE_PARSER:
+        exit_code = run_parser_mode();
+        break;
+        // case MODE_AST:
+        //     exit_code = run_ast_mode();
+        //     break;
+        // case MODE_SEMANTIC:
+        //     exit_code = run_semantic_mode(debug_symtable);
+        //     break;
+        // case MODE_TAC:
+        //     exit_code = run_tac_mode(debug_symtable);
+        //     break;
+        // case MODE_OPT:
+        //     exit_code = run_opt_mode(debug_symtable);
+        //     break;
+        // case MODE_CODEGEN:
+        //     exit_code = run_codegen_mode(debug_symtable);
+        //     break;
     }
 
-    // Delegação para o módulo correto
-    int exit_code = (mode == ExecutionMode::LEXER) ? run_lexer_mode() : run_parser_mode();
-
+    // Fechar o arquivo de entrada se não for stdin
     if (input != stdin)
     {
         fclose(input);

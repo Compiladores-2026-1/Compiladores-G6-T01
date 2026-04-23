@@ -1,12 +1,12 @@
-#include "lexer_runner.hpp"
-#include "tokens.hpp" // Ajuste o nome conforme gerado pelo Bison
+#include "runners.hpp"
+#include "parser.hpp" // Cabeçalho gerado pelo Bison (contém o enum de tokens)
 #include <iostream>
 #include <string>
 
-// Declaração do lexer gerado pelo Flex
+// Declaração da função do lexer gerada pelo Flex
 extern int yylex();
 
-// Função auxiliar (static para restringir ao escopo deste arquivo)
+// Função auxiliar mantida restrita a este arquivo (static)
 static std::string token_to_string(int token)
 {
     switch (token)
@@ -119,6 +119,7 @@ int run_lexer_mode()
     int token;
     bool first_token = true;
 
+    // Fica lendo tokens até o Flex retornar 0 (fim de arquivo)
     while ((token = yylex()) != 0)
     {
         if (!first_token)
@@ -129,6 +130,6 @@ int run_lexer_mode()
         first_token = false;
     }
 
-    std::cout << "\nFim da analise léxica.\n";
+    std::cout << "\n\nFim da analise léxica.\n";
     return 0;
 }
