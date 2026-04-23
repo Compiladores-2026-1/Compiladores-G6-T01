@@ -12,10 +12,11 @@ extra_javascript:
 
 nav:
     - Visão Geral:
-          - Descrição Compilador para C-- Strict para x86-64: index.md
+          - Descrição Compilador para C-- Strict para x86-64: descricao_compilador.md
           - Descrição da lógica de programação do C-- Strict: logica_programacao.md
     - Fases do Compilador:
           - Análise Léxica (tokens da linguagem): tokens.md
+          - Funcionamento do Analisador Sintático: funcionamento_parser.md
           - Análise Sintática (gramática em BNF): Gramática.md
           - Restrições da Linguagem para Parsing: limitacoes_gramatica.md
           - Geração de Código Intermediário (C-- Strict para TAC): conversao_tac.md
