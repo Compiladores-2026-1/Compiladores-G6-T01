@@ -736,7 +736,7 @@ Embora a precedência seja especificada principalmente na gramática, o Bison pe
 ### 14.3. Associatividade
 
 - **Left-associative:** `a + b + c` = `(a + b) + c`
-- **Right-associative:** `a = b = c` = `a = (b = c)` (não implementado em C-- Strict)
+- **Right-associative:** `a = b = c` = `a = (b = c)` (suportado pela gramática atual do parser)
 
 ---
 
