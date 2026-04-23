@@ -1,6 +1,7 @@
 # Adiciona os subdiretórios
 add_subdirectory(parser)
 add_subdirectory(lexer)
+add_subdirectory(ast)
 add_subdirectory(runners)
 
 # Cria o executável do compilador
