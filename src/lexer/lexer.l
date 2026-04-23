@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lexer/tokens.h"
+#include "tokens.hpp"
 
 int line = 1;
 %}
@@ -105,9 +105,23 @@ COMMENT_BLOCK "/*"([^*]|(\*+[^*/]))*\*+"/"
             }
 
 {CHAR_LITERAL}  {
-                    yylval.charval = yytext[1];
-                    return CHAR_LITERAL;
+                int ascii_val = 0;
+
+                if (yytext[1] == '\\') {
+                    switch(yytext[2]) {
+                        case 'n': ascii_val = 10; break; // Nova linha
+                        case 't': ascii_val = 9;  break; // Tab
+                        case 'r': ascii_val = 13; break; // Carriage return
+                        case '0': ascii_val = 0;  break; // Null
+                        default:  ascii_val = yytext[2]; break; // Outros escapes
+                    }
+                } else {
+                    ascii_val = (int)yytext[1];
                 }
+
+                yylval.intval = ascii_val;
+                return INTEGER_LITERAL;
+            }
 
 {IDENTIFIER}    {
                     yylval.strval = strdup(yytext);
