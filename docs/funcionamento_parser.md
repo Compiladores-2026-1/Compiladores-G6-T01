@@ -697,10 +697,10 @@ Parser
 
 ### 13.1. O que é LALR(1)?
 
-**LALR** = **L**eft-to-right, **A**lternatively **L**eft-derivation, with **R**ight handle
+**LALR(1)** = **L**ook-**A**head **LR(1)**, onde **LR** significa **L**eft-to-right scan, **R**ightmost derivation in reverse
 
-- **Left-to-right:** O parser lê os tokens da esquerda para a direita
-- **Left derivation:** Substitui o não-terminal mais à esquerda
+- **Left-to-right scan:** O parser lê os tokens da esquerda para a direita
+- **Rightmost derivation in reverse:** O parser constrói a derivação mais à direita em ordem reversa
 - **(1):** Usa apenas 1 token de lookahead para decisões
 
 ### 13.2. Tabelas de Parsing
