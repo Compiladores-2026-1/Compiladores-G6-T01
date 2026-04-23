@@ -1,14 +1,20 @@
 %code requires {
-    /* Sem dependências da AST ou bibliotecas C++ */
+    #include "ast.hpp"
+    #include <vector>
+    #include <string>
 }
 
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "ast.hpp"
 
 int yylex(void);
 extern int line;
 void yyerror(const char *s);
+
+// Variável global para armazenar a raiz da AST
+ProgramNode* root_ast = nullptr;
 %}
 
 /* Semantic Types */
@@ -18,6 +24,17 @@ void yyerror(const char *s);
     double doubleval;
     char charval;
     char *strval;
+
+    // Tipos de nós da AST
+    class ASTNode* ast_node;
+    class BlockNode* block_node;
+    class FuncDeclNode* func_decl_node;
+    class ProgramNode* prog_node;
+    class VarDeclNode* var_decl_node;
+
+    // Listas de nós
+    std::vector<class ASTNode*>* node_list;
+    std::vector<class VarDeclNode*>* param_list;
 }
 
 /* Tokens */
@@ -41,6 +58,27 @@ void yyerror(const char *s);
 %token <charval> CHAR_LITERAL
 %token <intval> BOOL_LITERAL
 
+/* Tipos dos não-terminais */
+%type <prog_node> program
+%type <func_decl_node> main_function function_declaration
+%type <intval> type_specifier assignment_operator unary_operator relational_operator
+
+%type <node_list> global_declaration_list global_declaration
+%type <node_list> local_declaration
+%type <node_list> variable_declaration init_declarator_list
+%type <node_list> statement_list optional_argument_list argument_list optional_call_suffix
+
+%type <ast_node> init_declarator
+%type <param_list> optional_parameters parameter_list
+%type <var_decl_node> parameter
+
+%type <block_node> block
+%type <ast_node> statement matched_statement unmatched_statement jump_statement expression_statement
+%type <ast_node> expression optional_expression assignment_expression
+%type <ast_node> logical_or_expression logical_and_expression relational_expression
+%type <ast_node> additive_expression multiplicative_expression unary_expression primary_expression
+%type <ast_node> optional_initializer optional_for_initializer optional_for_condition optional_for_step
+
 /* Start Symbol */
 %start program
 
@@ -52,21 +90,37 @@ void yyerror(const char *s);
 
 program
     : main_function {
-        printf("[PROGRAMA ANALISADO COM SUCESSO]\n");
+        $$ = new ProgramNode();
+        $$->declarations.push_back($1);
+        root_ast = $$;
     }
     | global_declaration_list main_function {
-        printf("[PROGRAMA ANALISADO COM SUCESSO]\n");
+        $$ = new ProgramNode();
+        $$->declarations = *$1;
+        $$->declarations.push_back($2);
+        root_ast = $$;
+        delete $1;
     }
     ;
 
 global_declaration_list
-    : global_declaration
-    | global_declaration_list global_declaration
+    : global_declaration {
+        $$ = $1;
+    }
+    | global_declaration_list global_declaration {
+        $$ = $1;
+        $$->insert($$->end(), $2->begin(), $2->end());
+        delete $2;
+    }
     ;
 
 global_declaration
-    : function_declaration
-    | variable_declaration SEMICOLON
+    : function_declaration {
+        $$ = new std::vector<ASTNode*>{$1};
+    }
+    | variable_declaration SEMICOLON {
+        $$ = $1;
+    }
     ;
 
 /* =========================================================================
@@ -75,62 +129,71 @@ global_declaration
 
 main_function
     : INT MAIN LPAREN RPAREN block {
-        printf("[FUNÇÃO PRINCIPAL: main]\n");
+        $$ = new FuncDeclNode(INT, "main", $5);
     }
     ;
 
 function_declaration
     : type_specifier IDENTIFIER LPAREN optional_parameters RPAREN block {
-        printf("[DECLARAÇÃO DE FUNÇÃO: %s]\n", $2);
+        $$ = new FuncDeclNode($1, std::string($2), $6);
+        if ($4) {
+            $$->params = *$4;
+            delete $4;
+        }
     }
     | type_specifier IDENTIFIER LPAREN optional_parameters RPAREN SEMICOLON {
-        printf("[PROTÓTIPO DE FUNÇÃO: %s]\n", $2);
+        $$ = new FuncDeclNode($1, std::string($2), nullptr); // Protótipo de função
+        if ($4) {
+            $$->params = *$4;
+            delete $4;
+        }
     }
     ;
 
 variable_declaration
     : type_specifier init_declarator_list {
-        printf("[FIM DECLARAÇÃO DE VARIÁVEIS]\n");
+        $$ = $2;
+        // Aplica o tipo base a todas as variáveis na lista (ex: int x, y, z;)
+        for (auto node : *$$) {
+            if (auto var_node = dynamic_cast<VarDeclNode*>(node)) {
+                var_node->type_token = $1;
+            }
+        }
     }
     ;
 
 init_declarator_list
-    : init_declarator
-    | init_declarator_list COMMA init_declarator
+    : init_declarator {
+        $$ = new std::vector<ASTNode*>();
+        $$->push_back($1);
+    }
+    | init_declarator_list COMMA init_declarator {
+        $$ = $1;
+        $$->push_back($3);
+    }
     ;
 
 init_declarator
     : IDENTIFIER optional_initializer {
-        printf("[VARIÁVEL RECONHECIDA: %s]\n", $1);
+        // Criamos com tipo 0 inicialmente, variable_declaration ajustará o tipo.
+        $$ = new VarDeclNode(0, std::string($1), $2);
     }
     ;
 
 /* Types */
 
 type_specifier
-    : INT    {
-        printf("[TIPO: INT]\n");
-    }
-    | FLOAT  {
-        printf("[TIPO: FLOAT]\n");
-    }
-    | DOUBLE {
-        printf("[TIPO: DOUBLE]\n");
-    }
-    | CHAR   {
-        printf("[TIPO: CHAR]\n");
-    }
-    | BOOL   {
-        printf("[TIPO: BOOL]\n");
-    }
-    | VOID   {
-        printf("[TIPO: VOID]\n");
-    }
+    : INT    { $$ = INT; }
+    | FLOAT  { $$ = FLOAT; }
+    | DOUBLE { $$ = DOUBLE; }
+    | CHAR   { $$ = CHAR; }
+    | BOOL   { $$ = BOOL; }
+    | VOID   { $$ = VOID; }
     ;
 
 optional_initializer
-    : ASSIGN expression
-    | /* empty */
+    : ASSIGN expression { $$ = $2; }
+    | /* empty */ { $$ = nullptr; }
     ;
 
 /* =========================================================================
@@ -138,18 +201,24 @@ optional_initializer
    ========================================================================= */
 
 optional_parameters
-    : parameter_list
-    | /* empty */
+    : parameter_list { $$ = $1; }
+    | /* empty */ { $$ = nullptr; }
     ;
 
 parameter_list
-    : parameter
-    | parameter_list COMMA parameter
+    : parameter {
+        $$ = new std::vector<VarDeclNode*>();
+        $$->push_back($1);
+    }
+    | parameter_list COMMA parameter {
+        $$ = $1;
+        $$->push_back($3);
+    }
     ;
 
 parameter
     : type_specifier IDENTIFIER {
-        printf("[PARÂMETRO: %s]\n", $2);
+        $$ = new VarDeclNode($1, std::string($2), nullptr);
     }
     ;
 
@@ -159,18 +228,17 @@ parameter
 
 block
     : LBRACE statement_list RBRACE {
-        printf("[BLOCO DE CÓDIGO FECHADO]\n");
+        $$ = new BlockNode();
+        if ($2) {
+            $$->statements.insert($$->statements.end(), $2->begin(), $2->end());
+            delete $2;
+        }
     }
     ;
 
-local_declaration_list
-    : /* empty */
-    | local_declaration_list local_declaration
-    ;
-
 local_declaration
-    : function_declaration
-    | variable_declaration SEMICOLON
+    : function_declaration { $$ = new std::vector<ASTNode*>{$1}; }
+    | variable_declaration SEMICOLON { $$ = $1; }
     ;
 
 /* =========================================================================
@@ -178,74 +246,89 @@ local_declaration
    ========================================================================= */
 
 statement_list
-    : /* empty */
-    | statement_list statement
-    | statement_list local_declaration
+    : /* empty */ { $$ = new std::vector<ASTNode*>(); }
+    | statement_list statement {
+        $$ = $1;
+        if ($2) $$->push_back($2);
+    }
+    | statement_list local_declaration {
+        $$ = $1;
+        if ($2) {
+            // local_declaration retorna um vector de ASTNode*, por isso inserimos os elementos
+            $$->insert($$->end(), $2->begin(), $2->end());
+            delete $2;
+        }
+    }
     ;
 
 statement
-    : matched_statement
-    | unmatched_statement
+    : matched_statement { $$ = $1; }
+    | unmatched_statement { $$ = $1; }
     ;
 
 jump_statement
-    : BREAK SEMICOLON {
-        printf("[COMANDO: BREAK]\n");
-    }
-    | CONTINUE SEMICOLON {
-        printf("[COMANDO: CONTINUE]\n");
-    }
-    | RETURN optional_expression SEMICOLON {
-        printf("[COMANDO: RETURN]\n");
-    }
+    : BREAK SEMICOLON { $$ = new BreakNode(); } // Em vez de new IdNode("break")
+    | CONTINUE SEMICOLON { $$ = new ContinueNode(); }
+    | RETURN optional_expression SEMICOLON { $$ = new ReturnNode($2); }
     ;
 
 matched_statement
-    : block
-    | jump_statement
-    | expression_statement
+    : block { $$ = $1; }
+    | jump_statement { $$ = $1; }
+    | expression_statement { $$ = $1; }
     | WHILE LPAREN expression RPAREN matched_statement {
-        printf("[LACO WHILE FECHADO]\n");
+        $$ = new WhileNode($3, $5);
     }
     | FOR LPAREN optional_for_initializer SEMICOLON optional_for_condition SEMICOLON optional_for_step RPAREN matched_statement {
-        printf("[LACO FOR FECHADO]\n");
+        $$ = new ForNode($3, $5, $7, $9);
     }
     | IF LPAREN expression RPAREN matched_statement ELSE matched_statement {
-        printf("[IF-ELSE FECHADO]\n");
+        $$ = new IfNode($3, $5, $7);
     }
     ;
 
 unmatched_statement
     : IF LPAREN expression RPAREN statement {
-        printf("[IF FECHADO]\n");
+        $$ = new IfNode($3, $5, nullptr);
     }
     | IF LPAREN expression RPAREN matched_statement ELSE unmatched_statement {
-        printf("[IF-ELSE FECHADO]\n");
+        $$ = new IfNode($3, $5, $7);
     }
     | WHILE LPAREN expression RPAREN unmatched_statement {
-        printf("[LACO WHILE FECHADO]\n");
+        $$ = new WhileNode($3, $5);
     }
     | FOR LPAREN optional_for_initializer SEMICOLON optional_for_condition SEMICOLON optional_for_step RPAREN unmatched_statement {
-        printf("[LACO FOR FECHADO]\n");
+        $$ = new ForNode($3, $5, $7, $9);
     }
     ;
 
 /* For Loop Components */
 
 optional_for_initializer
-    : expression
-    | variable_declaration
-    | /* empty */
+    : expression { $$ = $1; }
+    | variable_declaration {
+        // Se houver múltiplas declarações, agrupamos num bloco auxiliar para a AST.
+        if ($1->size() == 1) {
+            $$ = (*$1)[0];
+            delete $1;
+        } else {
+            auto block = new BlockNode();
+            block->statements = *$1;
+            delete $1;
+            $$ = block;
+        }
+    }
+    | /* empty */ { $$ = nullptr; }
     ;
 
 optional_for_condition
-    : expression
-    | /* empty */
+    : expression { $$ = $1; }
+    | /* empty */ { $$ = nullptr; }
     ;
 
 optional_for_step
-    : expression
-    | /* empty */
+    : expression { $$ = $1; }
+    | /* empty */ { $$ = nullptr; }
     ;
 
 /* =========================================================================
@@ -253,177 +336,157 @@ optional_for_step
    ========================================================================= */
 
 expression_statement
-    : optional_expression SEMICOLON
+    : optional_expression SEMICOLON { $$ = $1; }
     ;
 
 optional_expression
-    : expression
-    | /* empty */
+    : expression { $$ = $1; }
+    | /* empty */ { $$ = nullptr; }
     ;
 
 expression
-    : assignment_expression
+    : assignment_expression { $$ = $1; }
     ;
 
 assignment_expression
-    : logical_or_expression
+    : logical_or_expression { $$ = $1; }
     | IDENTIFIER assignment_operator assignment_expression {
-        printf("[ATRIBUIÇÃO PARA: %s]\n", $1);
+        $$ = new AssignNode(std::string($1), $2, $3);
     }
     ;
 
 assignment_operator
-    : ASSIGN  {
-        printf("[OP ASSIGN: =]\n");
-    }
-    | PLUSEQ  {
-        printf("[OP ASSIGN: +=]\n");
-    }
-    | MINUSEQ {
-        printf("[OP ASSIGN: -=]\n");
-    }
-    | MULTEQ  {
-        printf("[OP ASSIGN: *=]\n");
-    }
-    | DIVEQ   {
-        printf("[OP ASSIGN: /=]\n");
-    }
-    | MODEQ   {
-        printf("[OP ASSIGN: %=]\n");
-    }
+    : ASSIGN  { $$ = ASSIGN; }
+    | PLUSEQ  { $$ = PLUSEQ; }
+    | MINUSEQ { $$ = MINUSEQ; }
+    | MULTEQ  { $$ = MULTEQ; }
+    | DIVEQ   { $$ = DIVEQ; }
+    | MODEQ   { $$ = MODEQ; }
     ;
 
+/* * Hierarquia de Precedência Usando Recursão à Esquerda (Padrão Bison)
+ */
+
 logical_or_expression
-    : logical_and_expression
+    : logical_and_expression { $$ = $1; }
     | logical_or_expression OR logical_and_expression {
-        printf("[OP LOGICO: OR]\n");
+        $$ = new BinOpNode(OR, $1, $3);
     }
     ;
 
 logical_and_expression
-    : relational_expression
+    : relational_expression { $$ = $1; }
     | logical_and_expression AND relational_expression {
-        printf("[OP LOGICO: AND]\n");
+        $$ = new BinOpNode(AND, $1, $3);
     }
     ;
 
 relational_expression
-    : additive_expression
-    | relational_expression relational_operator additive_expression
+    : additive_expression { $$ = $1; }
+    | relational_expression relational_operator additive_expression {
+        $$ = new BinOpNode($2, $1, $3);
+    }
     ;
 
 relational_operator
-    : GT  {
-        printf("[OP RELACIONAL: >]\n");
-    }
-    | LT  {
-        printf("[OP RELACIONAL: <]\n");
-    }
-    | GE  {
-        printf("[OP RELACIONAL: >=]\n");
-    }
-    | LE  {
-        printf("[OP RELACIONAL: <=]\n");
-    }
-    | EQ  {
-        printf("[OP RELACIONAL: ==]\n");
-    }
-    | NEQ {
-        printf("[OP RELACIONAL: !=]\n");
-    }
+    : GT  { $$ = GT; }
+    | LT  { $$ = LT; }
+    | GE  { $$ = GE; }
+    | LE  { $$ = LE; }
+    | EQ  { $$ = EQ; }
+    | NEQ { $$ = NEQ; }
     ;
 
 additive_expression
-    : multiplicative_expression
+    : multiplicative_expression { $$ = $1; }
     | additive_expression PLUS multiplicative_expression {
-        printf("[OP ARITMÉTICO: +]\n");
+        $$ = new BinOpNode(PLUS, $1, $3);
     }
     | additive_expression MINUS multiplicative_expression {
-        printf("[OP ARITMÉTICO: -]\n");
+        $$ = new BinOpNode(MINUS, $1, $3);
     }
     ;
 
 multiplicative_expression
-    : unary_expression
+    : unary_expression { $$ = $1; }
     | multiplicative_expression MULT unary_expression {
-        printf("[OP ARITMÉTICO: *]\n");
+        $$ = new BinOpNode(MULT, $1, $3);
     }
     | multiplicative_expression DIV unary_expression {
-        printf("[OP ARITMÉTICO: /]\n");
+        $$ = new BinOpNode(DIV, $1, $3);
     }
     | multiplicative_expression MOD unary_expression {
-        printf("[OP ARITMÉTICO: %%]\n");
+        $$ = new BinOpNode(MOD, $1, $3);
     }
     ;
 
 unary_expression
-    : primary_expression
-    | unary_operator unary_expression
+    : primary_expression {
+        $$ = $1;
+    }
+    | unary_operator unary_expression {
+        $$ = new UnOpNode($1, $2);
+    }
     | IDENTIFIER INC {
-        printf("[POS-INCREMENTO: %s]\n", $1);
+        $$ = new UnOpNode(POST_INC, new IdNode(std::string($1)));
     }
     | IDENTIFIER DEC {
-        printf("[POS-DECREMENTO: %s]\n", $1);
+        $$ = new UnOpNode(POST_DEC, new IdNode(std::string($1)));
     }
     ;
 
 unary_operator
-    : NOT_OP {
-        printf("[OP UNÁRIO: ~]\n");
-    }
-    | NOT    {
-        printf("[OP UNÁRIO: !]\n");
-    }
-    | MINUS  {
-        printf("[OP UNÁRIO: -]\n");
-    }
-    | INC    {
-        printf("[PRE-INCREMENTO]\n");
-    }
-    | DEC    {
-        printf("[PRE-DECREMENTO]\n");
-    }
+    : NOT_OP { $$ = NOT_OP; }
+    | NOT    { $$ = NOT; }
+    | MINUS  { $$ = MINUS; }
+    | INC    { $$ = INC; }
+    | DEC    { $$ = DEC; }
     ;
 
-/* Redefini a chamada de função direto aqui para facilitar a impressão sem precisar de nós */
 primary_expression
-    : IDENTIFIER {
-        printf("[IDENTIFICADOR: %s]\n", $1);
+    : IDENTIFIER optional_call_suffix {
+        if ($2) { // Se houver sufixo de chamada, é uma chamada de função
+            auto call = new FuncCallNode(std::string($1));
+            call->args = *$2;
+            delete $2;
+            $$ = call;
+        } else {
+            $$ = new IdNode(std::string($1));
+        }
     }
-    | IDENTIFIER LPAREN optional_argument_list RPAREN {
-        printf("[CHAMADA DE FUNÇÃO: %s]\n", $1);
-    }
-    | INTEGER_LITERAL {
-        printf("[INTEGER: %d]\n", $1);
-    }
-    | FLOAT_LITERAL   {
-        printf("[FLOAT: %f]\n", $1);
-    }
-    | DOUBLE_LITERAL  {
-        printf("[DOUBLE: %lf]\n", $1);
-    }
-    | BOOL_LITERAL    {
-        printf("[BOOL: %d]\n", $1);
-    }
-    | CHAR_LITERAL    {
-        printf("[CHAR: %c]\n", $1);
-    }
+    | INTEGER_LITERAL { $$ = new LiteralNode(INTEGER_LITERAL, std::to_string($1)); }
+    | FLOAT_LITERAL   { $$ = new LiteralNode(FLOAT_LITERAL, std::to_string($1)); }
+    | DOUBLE_LITERAL  { $$ = new LiteralNode(DOUBLE_LITERAL, std::to_string($1)); }
+    | BOOL_LITERAL    { $$ = new LiteralNode(BOOL_LITERAL, std::to_string($1)); }
+    | CHAR_LITERAL    { $$ = new LiteralNode(CHAR_LITERAL, std::string(1, $1)); }
     | UNKNOWN_TOKEN {
-        yyerror("Token desconhecido ou caractere invalido detectado.");
+        yyerror("Token desconhecido ou caractere inválido detectado.");
+        $$ = nullptr;
     }
-    | LPAREN expression RPAREN
+    | LPAREN expression RPAREN { $$ = $2; }
     ;
 
-/* Function Arguments */
+/* Function Calls & Arguments */
+
+optional_call_suffix
+    : LPAREN optional_argument_list RPAREN { $$ = $2; }
+    | /* empty */ { $$ = nullptr; }
+    ;
 
 optional_argument_list
-    : /* empty */
-    | argument_list
+    : /* empty */ { $$ = new std::vector<ASTNode*>(); }
+    | argument_list { $$ = $1; }
     ;
 
 argument_list
-    : expression
-    | argument_list COMMA expression
+    : expression {
+        $$ = new std::vector<ASTNode*>();
+        $$->push_back($1);
+    }
+    | argument_list COMMA expression {
+        $$ = $1;
+        $$->push_back($3);
+    }
     ;
 
 %%

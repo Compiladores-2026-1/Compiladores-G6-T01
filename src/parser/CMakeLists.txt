@@ -9,6 +9,9 @@ BISON_TARGET(
 # Cria uma biblioteca estática apenas com o código gerado pelo Bison
 add_library(parser STATIC ${BISON_Parser_OUTPUTS})
 
+# Linka a biblioteca do parser com a biblioteca de AST, já que o parser precisa conhecer as estruturas de dados definidas lá
+target_link_libraries(parser PUBLIC ast)
+
 # Permite que quem usar essa biblioteca consiga enxergar o parser.hpp gerado
 target_include_directories(parser PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}

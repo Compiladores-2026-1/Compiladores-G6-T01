@@ -140,9 +140,9 @@ int main(int argc, char **argv)
     case MODE_PARSER:
         exit_code = run_parser_mode();
         break;
-        // case MODE_AST:
-        //     exit_code = run_ast_mode();
-        //     break;
+    case MODE_AST:
+        exit_code = run_ast_mode();
+        break;
         // case MODE_SEMANTIC:
         //     exit_code = run_semantic_mode(debug_symtable);
         //     break;
