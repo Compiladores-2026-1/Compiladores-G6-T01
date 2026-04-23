@@ -1,0 +1,12 @@
+#ifndef RUNNERS_HPP
+#define RUNNERS_HPP
+
+int run_lexer_mode();
+int run_parser_mode();
+int run_ast_mode();
+int run_semantic_mode(bool debugMode);
+int run_tac_mode(bool debugMode);
+int run_opt_mode(bool debugMode);
+int run_codegen_mode(bool debugMode);
+
+#endif // RUNNERS_HPP
