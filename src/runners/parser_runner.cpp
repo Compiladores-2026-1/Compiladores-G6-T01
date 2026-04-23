@@ -11,7 +11,7 @@ int run_parser_mode()
 
     if (parse_result == 0)
     {
-        std::cout << "\nFim da analise sintática.\n";
+        std::cout << "\nAnálise sintática concluída com sucesso.\n";
         return 0;
     }
 
