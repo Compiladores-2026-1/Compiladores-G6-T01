@@ -687,7 +687,7 @@ Parser
 
 ### 12.2. Restrições Gramaticais
 
-- **Main obrigatória:** Toda programa deve ter função `main`
+- **Main obrigatória:** Todo programa deve ter função `main`
 - **Tipo int para main:** A função `main` deve retornar `int`
 - **Sem recursão:** Não há suporte a chamadas recursivas (restrição semântica)
 
