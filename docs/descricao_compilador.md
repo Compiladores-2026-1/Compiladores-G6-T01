@@ -212,7 +212,7 @@ int main() {
 
 **Tokens gerados pela Análise Léxica:**
 ```
-INT MAIN ( ) { INT x = INT_LITERAL(5) ; INT y = INT_LITERAL(3) ; INT z = x + y ; RETURN z ; }
+INT MAIN ( ) { INT x = INTEGER_LITERAL(5) ; INT y = INTEGER_LITERAL(3) ; INT z = x + y ; RETURN z ; }
 ```
 
 **AST gerado pela Análise Sintática:**
