@@ -1,3 +1,7 @@
+%code requires {
+    /* Sem dependências da AST ou bibliotecas C++ */
+}
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,86 +46,96 @@ void yyerror(const char *s);
 
 %%
 
-/* Program */
+/* =========================================================================
+   Program & Globals
+   ========================================================================= */
 
 program
     : main_function {
-        printf("[PROGRAM]\n");
+        printf("[PROGRAMA ANALISADO COM SUCESSO]\n");
     }
     | global_declaration_list main_function {
-        printf("[PROGRAM]\n");
+        printf("[PROGRAMA ANALISADO COM SUCESSO]\n");
     }
     ;
 
-/* Global Declarations */
-
 global_declaration_list
-    : global_declaration {
-        printf("[GLOBAL_LIST]\n");
-    }
-    | global_declaration_list global_declaration {
-        printf("[GLOBAL_LIST]\n");
-    }
+    : global_declaration
+    | global_declaration_list global_declaration
     ;
 
 global_declaration
-    : type_specifier IDENTIFIER global_declaration_tail {
-        printf("[GLOBAL_DECL: %s]\n", $2);
-    }
+    : function_declaration
+    | variable_declaration SEMICOLON
     ;
 
-global_declaration_tail
-    : LPAREN optional_parameters RPAREN block {
-        printf("[FUNCTION_DEF]\n");
-    }
-    | LPAREN optional_parameters RPAREN SEMICOLON {
-        printf("[FUNCTION_DECL]\n");
-    }
-    | global_variable_tail SEMICOLON {
-        printf("[GLOBAL_VAR]\n");
-    }
-    ;
-
-global_variable_tail
-    : optional_initializer global_variable_items_tail
-    ;
-
-global_variable_items_tail
-    : COMMA IDENTIFIER optional_initializer global_variable_items_tail {
-        printf("[GLOBAL_VAR_ITEM: %s]\n", $2);
-    }
-    | /* empty */
-    ;
-
-/* Main */
+/* =========================================================================
+   Main & Declarations
+   ========================================================================= */
 
 main_function
     : INT MAIN LPAREN RPAREN block {
-        printf("[MAIN]\n");
+        printf("[FUNÇÃO PRINCIPAL: main]\n");
+    }
+    ;
+
+function_declaration
+    : type_specifier IDENTIFIER LPAREN optional_parameters RPAREN block {
+        printf("[DECLARAÇÃO DE FUNÇÃO: %s]\n", $2);
+    }
+    | type_specifier IDENTIFIER LPAREN optional_parameters RPAREN SEMICOLON {
+        printf("[PROTÓTIPO DE FUNÇÃO: %s]\n", $2);
+    }
+    ;
+
+variable_declaration
+    : type_specifier init_declarator_list {
+        printf("[FIM DECLARAÇÃO DE VARIÁVEIS]\n");
+    }
+    ;
+
+init_declarator_list
+    : init_declarator
+    | init_declarator_list COMMA init_declarator
+    ;
+
+init_declarator
+    : IDENTIFIER optional_initializer {
+        printf("[VARIÁVEL RECONHECIDA: %s]\n", $1);
     }
     ;
 
 /* Types */
 
 type_specifier
-    : INT   { printf("[TYPE:int]\n"); }
-    | FLOAT { printf("[TYPE:float]\n"); }
-    | DOUBLE { printf("[TYPE:double]\n"); }
-    | CHAR  { printf("[TYPE:char]\n"); }
-    | BOOL  { printf("[TYPE:bool]\n"); }
-    | VOID  { printf("[TYPE:void]\n"); }
+    : INT    {
+        printf("[TIPO: INT]\n");
+    }
+    | FLOAT  {
+        printf("[TIPO: FLOAT]\n");
+    }
+    | DOUBLE {
+        printf("[TIPO: DOUBLE]\n");
+    }
+    | CHAR   {
+        printf("[TIPO: CHAR]\n");
+    }
+    | BOOL   {
+        printf("[TIPO: BOOL]\n");
+    }
+    | VOID   {
+        printf("[TIPO: VOID]\n");
+    }
     ;
 
-/* Initialization */
-
 optional_initializer
-    : ASSIGN expression {
-        printf("[INIT]\n");
-    }
+    : ASSIGN expression
     | /* empty */
     ;
 
-/* Parameters */
+/* =========================================================================
+   Parameters
+   ========================================================================= */
 
 optional_parameters
     : parameter_list
@@ -129,64 +143,44 @@ optional_parameters
     ;
 
 parameter_list
-    : parameter parameter_list_tail {
-        printf("[PARAMS]\n");
-    }
-    ;
-
-parameter_list_tail
-    : COMMA parameter parameter_list_tail
-    | /* empty */
+    : parameter
+    | parameter_list COMMA parameter
     ;
 
 parameter
     : type_specifier IDENTIFIER {
-        printf("[PARAM: %s]\n", $2);
+        printf("[PARÂMETRO: %s]\n", $2);
     }
     ;
 
-/* Blocks */
+/* =========================================================================
+   Blocks & Local Declarations
+   ========================================================================= */
 
 block
-    : LBRACE local_declaration_list statement_list RBRACE {
-        printf("[BLOCK]\n");
+    : LBRACE statement_list RBRACE {
+        printf("[BLOCO DE CÓDIGO FECHADO]\n");
     }
     ;
 
-/* Local Declarations */
-
 local_declaration_list
-    : local_declaration local_declaration_list
-    | /* empty */
+    : /* empty */
+    | local_declaration_list local_declaration
     ;
 
 local_declaration
-    : type_specifier IDENTIFIER LPAREN optional_parameters RPAREN SEMICOLON {
-        printf("[FUNCTION_DECL: %s]\n", $2);
-    }
-    | type_specifier declaration_item_list SEMICOLON {
-        printf("[DECL]\n");
-    }
+    : function_declaration
+    | variable_declaration SEMICOLON
     ;
 
-declaration_item_list
-    : IDENTIFIER optional_initializer declaration_item_list_tail {
-        printf("[VAR: %s]\n", $1);
-    }
-    ;
-
-declaration_item_list_tail
-    : COMMA IDENTIFIER optional_initializer declaration_item_list_tail {
-        printf("[VAR: %s]\n", $2);
-    }
-    | /* empty */
-    ;
-
-/* Statements */
+/* =========================================================================
+   Statements
+   ========================================================================= */
 
 statement_list
-    : statement statement_list
-    | /* empty */
+    : /* empty */
+    | statement_list statement
+    | statement_list local_declaration
     ;
 
 statement
@@ -194,51 +188,45 @@ statement
     | unmatched_statement
     ;
 
-
 jump_statement
     : BREAK SEMICOLON {
-        printf("[BREAK]\n");
+        printf("[COMANDO: BREAK]\n");
     }
     | CONTINUE SEMICOLON {
-        printf("[CONTINUE]\n");
+        printf("[COMANDO: CONTINUE]\n");
     }
     | RETURN optional_expression SEMICOLON {
-        printf("[RETURN]\n");
+        printf("[COMANDO: RETURN]\n");
     }
     ;
-
 
 matched_statement
     : block
     | jump_statement
-    | expression_statement {
-        printf("[STMT]\n");
-    }
+    | expression_statement
     | WHILE LPAREN expression RPAREN matched_statement {
-        printf("[WHILE]\n");
+        printf("[LACO WHILE FECHADO]\n");
     }
     | FOR LPAREN optional_for_initializer SEMICOLON optional_for_condition SEMICOLON optional_for_step RPAREN matched_statement {
-        printf("[FOR]\n");
+        printf("[LACO FOR FECHADO]\n");
     }
     | IF LPAREN expression RPAREN matched_statement ELSE matched_statement {
-        printf("[ELSE]\n");
-        printf("[IF]\n");
+        printf("[IF-ELSE FECHADO]\n");
     }
     ;
 
 unmatched_statement
     : IF LPAREN expression RPAREN statement {
-        printf("[IF]\n");
+        printf("[IF FECHADO]\n");
     }
     | IF LPAREN expression RPAREN matched_statement ELSE unmatched_statement {
-        printf("[ELSE]\n");
-        printf("[IF]\n");
+        printf("[IF-ELSE FECHADO]\n");
     }
     | WHILE LPAREN expression RPAREN unmatched_statement {
-        printf("[WHILE]\n");
+        printf("[LACO WHILE FECHADO]\n");
     }
     | FOR LPAREN optional_for_initializer SEMICOLON optional_for_condition SEMICOLON optional_for_step RPAREN unmatched_statement {
-        printf("[FOR]\n");
+        printf("[LACO FOR FECHADO]\n");
     }
     ;
 
@@ -246,20 +234,7 @@ unmatched_statement
 
 optional_for_initializer
     : expression
-    | type_specifier for_declaration_item_list
-    | /* empty */
-    ;
-
-for_declaration_item_list
-    : IDENTIFIER optional_initializer for_declaration_item_list_tail {
-        printf("[VAR: %s]\n", $1);
-    }
-    ;
-
-for_declaration_item_list_tail
-    : COMMA IDENTIFIER optional_initializer for_declaration_item_list_tail {
-        printf("[VAR: %s]\n", $2);
-    }
+    | variable_declaration
     | /* empty */
     ;
 
@@ -273,12 +248,12 @@ optional_for_step
     | /* empty */
     ;
 
-/* Expressions */
+/* =========================================================================
+   Expressions
+   ========================================================================= */
 
 expression_statement
-    : optional_expression SEMICOLON {
-        printf("[EXPR_STMT]\n");
-    }
+    : optional_expression SEMICOLON
     ;
 
 optional_expression
@@ -290,165 +265,168 @@ expression
     : assignment_expression
     ;
 
-/* Assignment, AND, OR, Relational, Additive, Multiplicative, Unary, Primary Expressions */
-
 assignment_expression
-    : IDENTIFIER assignment_operator assignment_expression {
-        printf("[ASSIGN: %s]\n", $1);
+    : logical_or_expression
+    | IDENTIFIER assignment_operator assignment_expression {
+        printf("[ATRIBUIÇÃO PARA: %s]\n", $1);
     }
-    | logical_or_expression
     ;
 
 assignment_operator
-    : ASSIGN
-    | PLUSEQ
-    | MINUSEQ
-    | MULTEQ
-    | DIVEQ
-    | MODEQ
+    : ASSIGN  {
+        printf("[OP ASSIGN: =]\n");
+    }
+    | PLUSEQ  {
+        printf("[OP ASSIGN: +=]\n");
+    }
+    | MINUSEQ {
+        printf("[OP ASSIGN: -=]\n");
+    }
+    | MULTEQ  {
+        printf("[OP ASSIGN: *=]\n");
+    }
+    | DIVEQ   {
+        printf("[OP ASSIGN: /=]\n");
+    }
+    | MODEQ   {
+        printf("[OP ASSIGN: %=]\n");
+    }
     ;
 
 logical_or_expression
-    : logical_and_expression logical_or_expression_tail
-    ;
-
-logical_or_expression_tail
-    : OR logical_and_expression logical_or_expression_tail {
-        printf("[OR]\n");
+    : logical_and_expression
+    | logical_or_expression OR logical_and_expression {
+        printf("[OP LOGICO: OR]\n");
     }
-    | /* empty */
     ;
 
 logical_and_expression
-    : relational_expression logical_and_expression_tail
-    ;
-
-logical_and_expression_tail
-    : AND relational_expression logical_and_expression_tail {
-        printf("[AND]\n");
+    : relational_expression
+    | logical_and_expression AND relational_expression {
+        printf("[OP LOGICO: AND]\n");
     }
-    | /* empty */
     ;
 
 relational_expression
-    : additive_expression relational_expression_tail
-    ;
-
-relational_expression_tail
-    : relational_operator additive_expression {
-        printf("[REL_OP]\n");
-    }
-    | /* empty */
+    : additive_expression
+    | relational_expression relational_operator additive_expression
     ;
 
 relational_operator
-    : GT | LT | GE | LE | EQ | NEQ
+    : GT  {
+        printf("[OP RELACIONAL: >]\n");
+    }
+    | LT  {
+        printf("[OP RELACIONAL: <]\n");
+    }
+    | GE  {
+        printf("[OP RELACIONAL: >=]\n");
+    }
+    | LE  {
+        printf("[OP RELACIONAL: <=]\n");
+    }
+    | EQ  {
+        printf("[OP RELACIONAL: ==]\n");
+    }
+    | NEQ {
+        printf("[OP RELACIONAL: !=]\n");
+    }
     ;
 
 additive_expression
-    : multiplicative_expression additive_expression_tail
-    ;
-
-additive_expression_tail
-    : PLUS multiplicative_expression additive_expression_tail {
-        printf("[PLUS]\n");
+    : multiplicative_expression
+    | additive_expression PLUS multiplicative_expression {
+        printf("[OP ARITMÉTICO: +]\n");
     }
-    | MINUS multiplicative_expression additive_expression_tail {
-        printf("[MINUS]\n");
+    | additive_expression MINUS multiplicative_expression {
+        printf("[OP ARITMÉTICO: -]\n");
     }
-    | /* empty */
     ;
 
 multiplicative_expression
-    : unary_expression multiplicative_expression_tail
-    ;
-
-multiplicative_expression_tail
-    : MULT unary_expression multiplicative_expression_tail {
-        printf("[MULT]\n");
+    : unary_expression
+    | multiplicative_expression MULT unary_expression {
+        printf("[OP ARITMÉTICO: *]\n");
     }
-    | DIV unary_expression multiplicative_expression_tail {
-        printf("[DIV]\n");
+    | multiplicative_expression DIV unary_expression {
+        printf("[OP ARITMÉTICO: /]\n");
     }
-    | MOD unary_expression multiplicative_expression_tail {
-        printf("[MOD]\n");
+    | multiplicative_expression MOD unary_expression {
+        printf("[OP ARITMÉTICO: %%]\n");
     }
-    | /* empty */
     ;
 
 unary_expression
-    : unary_operator unary_expression {
-        printf("[UNARY]\n");
-    }
+    : primary_expression
+    | unary_operator unary_expression
     | IDENTIFIER INC {
-        printf("[POST_INC: %s]\n", $1);
+        printf("[POS-INCREMENTO: %s]\n", $1);
     }
     | IDENTIFIER DEC {
-        printf("[POST_DEC: %s]\n", $1);
+        printf("[POS-DECREMENTO: %s]\n", $1);
     }
-    | primary_expression
     ;
 
 unary_operator
-    : NOT_OP { printf("[NOT]\n"); }
-    | NOT    { printf("[NOT]\n"); }
-    | MINUS  { printf("[NEG]\n"); }
-    | INC    { printf("[INC]\n"); }
-    | DEC    { printf("[DEC]\n"); }
+    : NOT_OP {
+        printf("[OP UNÁRIO: ~]\n");
+    }
+    | NOT    {
+        printf("[OP UNÁRIO: !]\n");
+    }
+    | MINUS  {
+        printf("[OP UNÁRIO: -]\n");
+    }
+    | INC    {
+        printf("[PRE-INCREMENTO]\n");
+    }
+    | DEC    {
+        printf("[PRE-DECREMENTO]\n");
+    }
     ;
 
+/* Redefini a chamada de função direto aqui para facilitar a impressão sem precisar de nós */
 primary_expression
-    : IDENTIFIER optional_call_suffix {
-        printf("[ID: %s]\n", $1);
+    : IDENTIFIER {
+        printf("[IDENTIFICADOR: %s]\n", $1);
+    }
+    | IDENTIFIER LPAREN optional_argument_list RPAREN {
+        printf("[CHAMADA DE FUNÇÃO: %s]\n", $1);
     }
     | INTEGER_LITERAL {
-        printf("[NUM: %d]\n", $1);
+        printf("[INTEGER: %d]\n", $1);
     }
-    | FLOAT_LITERAL {
+    | FLOAT_LITERAL   {
         printf("[FLOAT: %f]\n", $1);
     }
-    | DOUBLE_LITERAL {
+    | DOUBLE_LITERAL  {
         printf("[DOUBLE: %lf]\n", $1);
     }
-    | BOOL_LITERAL {
+    | BOOL_LITERAL    {
         printf("[BOOL: %d]\n", $1);
     }
-    | CHAR_LITERAL {
-        printf("[CHAR]\n");
+    | CHAR_LITERAL    {
+        printf("[CHAR: %c]\n", $1);
     }
     | UNKNOWN_TOKEN {
-        yyerror("Token desconhecido ou caractere inválido detectado.");
+        yyerror("Token desconhecido ou caractere invalido detectado.");
     }
     | LPAREN expression RPAREN
     ;
 
-/* Function Calls */
-
-optional_call_suffix
-    : LPAREN optional_argument_list RPAREN {
-        printf("[CALL]\n");
-    }
-    | /* empty */
-    ;
-
-/* Arguments */
+/* Function Arguments */
 
 optional_argument_list
-    : argument_list
-    | /* empty */
+    : /* empty */
+    | argument_list
     ;
 
 argument_list
-    : expression argument_list_tail
-    ;
-
-argument_list_tail
-    : COMMA expression argument_list_tail
-    | /* empty */
+    : expression
+    | argument_list COMMA expression
     ;
 
 %%
-
 
 void yyerror(const char *s)
 {
