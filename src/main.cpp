@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lexer/tokens.h"
+#include "tokens.hpp"
 
 /* Declaração da função do lexer gerada pelo Flex */
 extern int yylex(void);   // Declaração da função do lexer gerada pelo Flex
