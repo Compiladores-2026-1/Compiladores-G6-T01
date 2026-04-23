@@ -134,7 +134,7 @@ O compilador utiliza registradores de propósito geral da arquitetura x86-64:
 | Registrador | Tamanho | Função | Uso no Compilador |
 |-------------|--------|--------|-------------------|
 | `rax` | 64-bit | Acumulador | Operações gerais, valor de retorno |
-| `rcx` | 64-bit | Contador | Loop counter, operandos shif |
+| `rcx` | 64-bit | Contador | Loop counter, operandos shift |
 | `rdx` | 64-bit | Dados | Operações gerais |
 | `rsi` | 64-bit | Source Index | Operações gerais |
 | `rdi` | 64-bit | Destination Index | Operações gerais |
