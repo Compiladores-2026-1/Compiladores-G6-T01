@@ -1,5 +1,4 @@
 #include "runners.hpp"
-#include "parser.hpp" // Cabeçalho gerado pelo Bison (contém o enum de tokens)
 #include <iostream>
 #include <string>
 
