@@ -1,6 +1,8 @@
 #pragma once
 
+#include "tokens.hpp"
 #include "ASTPrinter.hpp"
+#include "semantic.hpp"
 
 int run_lexer_mode();
 int run_parser_mode();
