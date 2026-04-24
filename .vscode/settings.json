@@ -1,14 +1,14 @@
 {
     "files.exclude": {
-        ".github": false,
-        "docs": false,
+        ".github": true,
+        "docs": true,
         "tests": false,
-        ".editorconfig": false,
-        ".gitignore": false,
-        "mkdocs.*": false,
-        "poetry.*": false,
-        "pyproject.*": false,
-        "README.*": false
+        ".editorconfig": true,
+        ".gitignore": true,
+        "mkdocs.*": true,
+        "poetry.*": true,
+        "pyproject.*": true,
+        "README.*": true
     },
     "files.associations": {
         "*.cmm": "plaintext"
@@ -41,6 +41,7 @@
         "strtod",
         "strtof",
         "strval",
+        "symtable",
         "yyerror",
         "yyin",
         "yylex",
