@@ -2,6 +2,8 @@
 add_subdirectory(parser)
 add_subdirectory(lexer)
 add_subdirectory(ast)
+add_subdirectory(symtable)
+add_subdirectory(semantic)
 add_subdirectory(runners)
 
 # Cria o executável do compilador
