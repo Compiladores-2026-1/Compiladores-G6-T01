@@ -24,6 +24,7 @@
         "floatval",
         "fprintf",
         "intval",
+        "JUMPF",
         "Linka",
         "linkar",
         "LPAREN",
