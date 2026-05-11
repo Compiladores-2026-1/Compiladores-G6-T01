@@ -89,4 +89,8 @@ public:
     void visit(FuncCallNode *node) override;
     void visit(BreakNode *node) override;
     void visit(ContinueNode *node) override;
+
+    // Getters e setters
+    std::vector<TACInstruction> &getInstructions() { return instructions; }
+    void setInstructions(const std::vector<TACInstruction> &opt_insts) { instructions = opt_insts; }
 };

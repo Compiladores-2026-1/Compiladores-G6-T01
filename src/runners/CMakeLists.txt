@@ -4,6 +4,7 @@ add_library(runners STATIC
     ast_runner.cpp
     semantic_runner.cpp
     tac_runner.cpp
+    opt_runner.cpp
 )
 
-target_link_libraries(runners PUBLIC lexer parser ast symtable semantic tac)
+target_link_libraries(runners PUBLIC lexer parser ast symtable semantic tac optimizer)

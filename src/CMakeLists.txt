@@ -5,6 +5,7 @@ add_subdirectory(ast)
 add_subdirectory(symtable)
 add_subdirectory(semantic)
 add_subdirectory(tac)
+add_subdirectory(optimizer)
 add_subdirectory(runners)
 
 # Cria o executável do compilador
