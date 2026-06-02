@@ -12,6 +12,7 @@ FetchContent_MakeAvailable(googletest)
 # Cria o executável de testes
 add_executable(testes
     lexer/teste_léxico.cpp
+    parser/teste_sintatico_incorreto.cpp
 )
 
 # Linka com o lexer e o parser (que possuem nossa lógica) e com o GTest
