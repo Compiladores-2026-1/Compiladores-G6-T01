@@ -14,6 +14,7 @@ nav:
     - Visão Geral:
           - Descrição Compilador para C-- Strict para x86-64: descricao_compilador.md
           - Descrição da lógica de programação do C-- Strict: logica_programacao.md
+          - Arquitetura Técnica e Regras de Escopo: arquitetura_escopo.md
     - Fases do Compilador:
           - Análise Léxica (tokens da linguagem): tokens.md
           - Funcionamento do Analisador Sintático: funcionamento_parser.md
