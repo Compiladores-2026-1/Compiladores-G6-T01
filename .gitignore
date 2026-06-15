@@ -6,6 +6,3 @@ release/
 debug/
 site/
 build/
-
-# macOS
-.DS_Store
