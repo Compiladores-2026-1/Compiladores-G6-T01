@@ -11,6 +11,7 @@ extra_javascript:
     - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
+    - Início: index.md
     - Visão Geral:
           - Descrição Compilador para C-- Strict para x86-64: descricao_compilador.md
           - Descrição da lógica de programação do C-- Strict: logica_programacao.md
@@ -32,6 +33,8 @@ nav:
           - Geração de Código Intermediário: implementacao_conversao_tac.md
           - Geração de Código Final: implementacao_conversao_assembly.md
     - Testes:
+          - Relatório Geral de Testes: relatorio_testes.md
+          - Relatório de Testes Sintáticos: relatorio_testes_sintaticos.md
           - Testes de Análise Léxica: testes_analise_lexica.md
           - Testes de Análise Sintática: testes_analise_sintatica.md
           - Testes de Geração de Código Intermediário: testes_conversao_tac.md
