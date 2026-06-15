@@ -6,3 +6,9 @@ release/
 debug/
 site/
 build/
+
+# Variáveis de ambiente e segredos locais
+.env
+
+# Ambientes Virtuais Python
+venv/
