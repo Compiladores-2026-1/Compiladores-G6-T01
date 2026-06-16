@@ -4,7 +4,7 @@ Este guia descreve os passos necessários para configurar o ambiente de desenvol
 
 ---
 
-## 🛠️ Compilando o Projeto
+## Compilando o Projeto
 
 O motor principal da compilação do nosso projeto utiliza o **CMake** para orquestrar o Flex, o Bison e a compilação em C.
 
@@ -73,7 +73,7 @@ Após o sucesso da compilação, o executável estará pronto para uso. Para rod
 
 ---
 
-## 📚 Executando a Documentação (MkDocs)
+## Executando a Documentação (MkDocs)
 
 Nós utilizamos o **MkDocs** com o tema Material para a documentação, e o **Poetry** para gerenciar essas dependências no Python.
 
