@@ -146,12 +146,12 @@ int main(int argc, char **argv)
     case MODE_SEMANTIC:
         exit_code = run_semantic_mode(debug_symtable);
         break;
-        // case MODE_TAC:
-        //     exit_code = run_tac_mode(debug_symtable);
-        //     break;
-        // case MODE_OPT:
-        //     exit_code = run_opt_mode(debug_symtable);
-        //     break;
+    case MODE_TAC:
+        exit_code = run_tac_mode();
+        break;
+    case MODE_OPT:
+        exit_code = run_opt_mode();
+        break;
         // case MODE_CODEGEN:
         //     exit_code = run_codegen_mode(debug_symtable);
         //     break;
