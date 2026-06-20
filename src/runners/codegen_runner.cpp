@@ -13,6 +13,14 @@ int run_codegen_mode(bool debugMode)
     {
         if (root_ast != NULL)
         {
+            // Executa a analise semantica antes do TAC/Assembly
+            SemanticVisitor semantic_checker(debugMode);
+            root_ast->accept(&semantic_checker);
+            if (debugMode)
+            {
+                semantic_checker.printSymbolTable();
+            }
+
             // 1. Gera o TAC
             TACVisitor tac_visitor;
             root_ast->accept(&tac_visitor);

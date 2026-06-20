@@ -28,7 +28,7 @@ Este projeto implementa um compilador completo para a linguagem C-- Strict, segu
 2. **Análise Sintática** — parsing via Bison (gramática LR)
 3. **Construção de AST** — representação em árvore sintática abstrata com padrão Visitor
 4. **Análise Semântica** — verificação de tipos e escopos com tabela de símbolos
-5. **Geração de código** *(em desenvolvimento)*
+5. **Geração de Código** — tradução final para x86-64 Assembly e compilação do executável binário
 
 ---
 
@@ -38,14 +38,14 @@ C-- Strict é um subconjunto simplificado de C com as seguintes características
 
 ### Tipos de Dados
 
-| Tipo     | Descrição                  |
-|----------|----------------------------|
-| `int`    | Inteiro                    |
-| `float`  | Ponto flutuante simples    |
-| `double` | Ponto flutuante duplo      |
-| `char`   | Caractere                  |
-| `bool`   | Booleano (`true`/`false`)  |
-| `void`   | Sem retorno (funções)      |
+| Tipo     | Descrição                 |
+| -------- | ------------------------- |
+| `int`    | Inteiro                   |
+| `float`  | Ponto flutuante simples   |
+| `double` | Ponto flutuante duplo     |
+| `char`   | Caractere                 |
+| `bool`   | Booleano (`true`/`false`) |
+| `void`   | Sem retorno (funções)     |
 
 ### Construções Suportadas
 
@@ -58,13 +58,13 @@ C-- Strict é um subconjunto simplificado de C com as seguintes características
 
 ### Operadores
 
-| Categoria       | Operadores                                 |
-|-----------------|--------------------------------------------|
-| Aritméticos     | `+`, `-`, `*`, `/`, `%`                    |
-| Relacionais     | `==`, `!=`, `<`, `>`, `<=`, `>=`           |
-| Lógicos         | `and`, `or`, `not`, `!`                    |
-| Atribuição      | `=`, `+=`, `-=`, `*=`, `/=`, `%=`         |
-| Unários/Postfix | `++`, `--`, `-` (negação unária)           |
+| Categoria       | Operadores                        |
+| --------------- | --------------------------------- |
+| Aritméticos     | `+`, `-`, `*`, `/`, `%`           |
+| Relacionais     | `==`, `!=`, `<`, `>`, `<=`, `>=`  |
+| Lógicos         | `and`, `or`, `not`, `!`           |
+| Atribuição      | `=`, `+=`, `-=`, `*=`, `/=`, `%=` |
+| Unários/Postfix | `++`, `--`, `-` (negação unária)  |
 
 ### Exemplo de Programa C-- Strict
 
@@ -116,21 +116,21 @@ Código-fonte (.cmm)
          │  AST validada
          ▼
 ┌───────────────────┐
-│ Geração de Código │  ← x86-64 Assembly (em desenvolvimento)
+│ Geração de Código │  ← x86-64 Assembly (Concluído)
 │   (Assembly)      │
 └───────────────────┘
 ```
 
 ### Componentes Principais
 
-| Componente            | Localização                    | Descrição                                          |
-|-----------------------|--------------------------------|----------------------------------------------------|
-| Analisador Léxico     | `src/lexer/lexer.l`            | Especificação Flex — reconhece tokens da linguagem |
-| Analisador Sintático  | `src/parser/parser.y`          | Gramática Bison — constrói a AST                   |
-| AST                   | `src/ast/`, `include/ast.hpp`  | 18 classes de nós com padrão Visitor               |
-| Tabela de Símbolos    | `src/symtable/`                | Gerenciamento de escopos aninhados                 |
-| Análise Semântica     | `src/semantic/`                | Verificação de tipos e uso de variáveis            |
-| Runners               | `src/runners/`                 | Implementam os modos de execução do compilador     |
+| Componente           | Localização                   | Descrição                                          |
+| -------------------- | ----------------------------- | -------------------------------------------------- |
+| Analisador Léxico    | `src/lexer/lexer.l`           | Especificação Flex — reconhece tokens da linguagem |
+| Analisador Sintático | `src/parser/parser.y`         | Gramática Bison — constrói a AST                   |
+| AST                  | `src/ast/`, `include/ast.hpp` | 18 classes de nós com padrão Visitor               |
+| Tabela de Símbolos   | `src/symtable/`               | Gerenciamento de escopos aninhados                 |
+| Análise Semântica    | `src/semantic/`               | Verificação de tipos e uso de variáveis            |
+| Runners              | `src/runners/`                | Implementam os modos de execução do compilador     |
 
 ---
 
@@ -191,46 +191,88 @@ make -j$(nproc)
 
 ## Como Usar
 
-```
-./compilador [MODO] [--symtable] <arquivo.cmm>
-```
-
-### Modos de Execução
-
-| Flag          | Descrição                                                   |
-|---------------|-------------------------------------------------------------|
-| `--lexer`     | Executa apenas a análise léxica e exibe os tokens           |
-| `--parser`    | Executa até a análise sintática                             |
-| `--ast`       | Gera e exibe a AST                                          |
-| `--semantic`  | Executa a análise semântica completa                        |
-| `--tac`       | Geração de código de três endereços *(em desenvolvimento)*  |
-| `--opt`       | Otimização *(em desenvolvimento)*                           |
-| `--codegen`   | Geração de código Assembly *(em desenvolvimento)*           |
-
-### Flag Auxiliar
-
-| Flag          | Descrição                                                   |
-|---------------|-------------------------------------------------------------|
-| `--symtable`  | Exibe a tabela de símbolos após a análise semântica         |
-
-### Exemplos
+O compilador opera de maneira análoga a grandes ferramentas da indústria (como o GCC). Por padrão, ao passar um arquivo de entrada, o projeto será compilado por completo e o binário executável será montado e linkado de forma automática usando as ferramentas padrão do sistema.
 
 ```bash
-# Análise léxica — exibe todos os tokens
-./compilador --lexer programa.cmm
-
-# Análise sintática
-./compilador --parser programa.cmm
-
-# Exibir a AST
-./compilador --ast programa.cmm
-
-# Análise semântica com exibição da tabela de símbolos
-./compilador --semantic --symtable programa.cmm
-
-# Entrada via stdin
-echo "int main() { return 0; }" | ./compilador --lexer
+./compilador [opcoes] arquivo_entrada
 ```
+
+### Comportamento Padrão e Arquivos Automáticos
+
+- Se nenhuma flag de modo for informada, o compilador irá processar o seu código até o final (Assembly), chamará o gcc para linkar as saídas e **gerará um binário executável definitivo** (por padrão `a.out`).
+- Quando uma flag limitadora de compilação for usada (ex: `-S`, `-fdump-ast`), e o caminho de saída `-o` **não for fornecido**, o compilador **salvará o resultado da etapa automaticamente** em um arquivo usando o nome base da entrada (ex: `programa.ast`, `programa.s`, `programa.tac`).
+
+### Principais Opções
+
+| Flag                      | Descrição                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `-o <arquivo>`            | Coloca a saída explicitamente no `<arquivo>` designado                                                              |
+| `-E, --lexer`             | Executa apenas o Lexer e gera os tokens (`.lex`)                                                                    |
+| `-fsyntax-only, --parser` | Executa apenas o Parser e valida a sintaxe (`.parser`)                                                              |
+| `-fdump-ast, --ast`       | Gera a Árvore Sintática Abstrata (AST) no arquivo (`.ast`)                                                          |
+| `--semantic`              | Executa a análise semântica (`.semantic`)                                                                           |
+| `-fdump-tac, --tac`       | Gera o Código de Três Endereços (TAC) no arquivo (`.tac`)                                                           |
+| `-O, --opt`               | Executa a otimização de código TAC (`.opt`)                                                                         |
+| `-S, --codegen`           | Gera apenas o código Assembly final e para (`.s`)                                                                   |
+| `--symtable`              | Imprime a tabela de símbolos (funciona em conjunto com as fases de semantica, tac, opt, codegen e binario)           |
+| `-h, --help`              | Exibe o menu de ajuda do compilador                                                                                 |
+
+### Exemplos de Execução
+
+```bash
+# Compila tudo e gera o executável "a.out" (pronto para rodar via ./a.out)
+./compilador programa.cmm
+
+# Compila tudo e gera o executável com o nome "meu_programa"
+./compilador programa.cmm -o meu_programa
+
+# Executa apenas até o assembly e salva o resultado automaticamente em "programa.s"
+./compilador -S programa.cmm
+
+# Executa apenas até o assembly e salva em "minha_saida.s"
+./compilador -S programa.cmm -o minha_saida.s
+
+# Faz a análise léxica e salva os tokens em "programa.lex"
+./compilador -E programa.cmm
+
+# Exibe a análise de código de três endereços em "programa.tac"
+./compilador -fdump-tac programa.cmm
+
+# Análise semântica incluindo tabela de símbolos explicitamente salva em "analise.txt"
+./compilador --semantic --symtable programa.cmm -o analise.txt
+```
+
+### Verificando a Execução do Programa
+
+Como a linguagem C-- Strict não possui no momento funções embutidas de saída (como um `print` ou `printf`), não haverá texto no terminal ao rodar o executável gerado. 
+
+Para saber se o programa executou corretamente e verificar o valor que a função `main()` retornou, você deve inspecionar o **código de saída** (exit status) do último comando executado no terminal. A forma de fazer isso varia dependendo de qual terminal você está usando:
+
+**1. Bash ou Zsh (padrão Linux/macOS):**
+```bash
+./meu_programa
+echo $?
+```
+
+**2. Fish Shell:**
+```fish
+./meu_programa
+echo $status
+```
+
+**3. PowerShell (Windows):**
+```powershell
+.\meu_programa.exe
+echo $LastExitCode
+```
+
+**4. Prompt de Comando / CMD (Windows):**
+```cmd
+meu_programa.exe
+echo %ERRORLEVEL%
+```
+
+Se a sua função `main` chegou ao fim com sucesso rodando `return 0;`, o terminal imprimirá `0` na tela!
 
 ---
 
@@ -311,7 +353,7 @@ ctest --output-on-failure
 ### Cobertura dos Testes
 
 | Módulo            | Arquivo de Teste                          |
-|-------------------|-------------------------------------------|
+| ----------------- | ----------------------------------------- |
 | Análise Léxica    | `tests/lexer/teste_léxico.cpp`            |
 | Análise Sintática | `tests/parser/teste_sintatico_parser.cpp` |
 
@@ -342,10 +384,10 @@ poetry run mkdocs serve
 
 Projeto desenvolvido para a disciplina de **Compiladores** — Grupo 6, Trabalho 1.
 
-| Nome            | GitHub                                                   |
-|-----------------|----------------------------------------------------------|
-| Samuel Caetano  | [@samuelncaetano](https://github.com/samuelncaetano)    |
-| Marjorie Mitzi  | [@Marjoriemitzi](https://github.com/Marjoriemitzi)      |
-| Thiago Accioly  | [@Acciolyy](https://github.com/Acciolyy)                |
-| Julia Massuda   | [@JuliaMassuda](https://github.com/JuliaMassuda)        |
-| João Rodrigues  | [@JpRodrigues2](https://github.com/JpRodrigues2)        |
+| Nome           | GitHub                                               |
+| -------------- | ---------------------------------------------------- |
+| Samuel Caetano | [@samuelncaetano](https://github.com/samuelncaetano) |
+| Marjorie Mitzi | [@Marjoriemitzi](https://github.com/Marjoriemitzi)   |
+| Thiago Accioly | [@Acciolyy](https://github.com/Acciolyy)             |
+| Julia Massuda  | [@JuliaMassuda](https://github.com/JuliaMassuda)     |
+| João Rodrigues | [@JpRodrigues2](https://github.com/JpRodrigues2)     |
