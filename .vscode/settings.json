@@ -7,8 +7,8 @@
         ".gitignore": true,
         "mkdocs.*": true,
         "poetry.*": true,
-        "pyproject.*": true,
-        "README.*": true
+        "pyproject.*": true
+        // "README.*": true
     },
     "files.associations": {
         "*.cmm": "plaintext"

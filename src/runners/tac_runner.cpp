@@ -4,7 +4,7 @@
 extern int yyparse();
 extern ProgramNode *root_ast;
 
-int run_tac_mode()
+int run_tac_mode(bool debugMode)
 {
     // 1. Roda o parser para construir a AST na variável root_ast
     int parse_result = yyparse();
@@ -13,6 +13,14 @@ int run_tac_mode()
     {
         if (root_ast != NULL)
         {
+            // Executa a analise semantica antes do TAC
+            SemanticVisitor semantic_checker(debugMode);
+            root_ast->accept(&semantic_checker);
+            if (debugMode)
+            {
+                semantic_checker.printSymbolTable();
+            }
+
             // 2. Instancia o Visitor do TAC
             TACVisitor tac_visitor;
 
