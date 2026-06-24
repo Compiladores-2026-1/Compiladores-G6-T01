@@ -26,6 +26,7 @@ nav:
     - Projeto e Processo:
           - Descrição das ferramentas: ferramentas.md
           - Descrição do setup do projeto: setup_compilador.md
+          - Integração Contínua (CI): integracao_continua.md
           - Documento de padrão de commit (Angular): padrao_commit.md
     - Implementação:
           - Análise Léxica: implementacao_analise_lexica.md
