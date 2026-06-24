@@ -31,10 +31,39 @@ std::string CodeGen::getOperand(const std::string &arg)
     return arg + "(%rip)";
 }
 
-void CodeGen::computeLocalVariables(const std::vector<TACInstruction> &instructions, size_t start_idx)
+std::vector<std::string> CodeGen::splitParams(const std::string &param_list)
+{
+    std::vector<std::string> params;
+    if (param_list.empty())
+        return params;
+
+    size_t start = 0;
+    size_t comma;
+    while ((comma = param_list.find(',', start)) != std::string::npos)
+    {
+        params.push_back(param_list.substr(start, comma - start));
+        start = comma + 1;
+    }
+    params.push_back(param_list.substr(start));
+    return params;
+}
+
+void CodeGen::computeLocalVariables(const std::vector<TACInstruction> &instructions, size_t start_idx,
+                                    const std::vector<std::string> &params)
 {
     stack_offsets.clear();
     current_stack_size = 0;
+
+    // Aloca os slots dos parâmetros primeiro, na ordem de declaração, para que o
+    // prólogo possa copiar os registradores de argumento para esses slots.
+    for (const auto &p : params)
+    {
+        if (!p.empty() && stack_offsets.find(p) == stack_offsets.end())
+        {
+            current_stack_size -= 4; // Int = 4 bytes
+            stack_offsets[p] = current_stack_size;
+        }
+    }
 
     for (size_t i = start_idx; i < instructions.size(); i++)
     {
@@ -43,7 +72,8 @@ void CodeGen::computeLocalVariables(const std::vector<TACInstruction> &instructi
 
         auto allocateVar = [&](const std::string &var)
         {
-            if (!var.empty() && !isNumber(var) && stack_offsets.find(var) == stack_offsets.end())
+            if (!var.empty() && !isNumber(var) && global_vars.find(var) == global_vars.end() &&
+                stack_offsets.find(var) == stack_offsets.end())
             {
                 current_stack_size -= 4; // Int = 4 bytes
                 stack_offsets[var] = current_stack_size;
@@ -84,6 +114,10 @@ void CodeGen::generate(const std::vector<TACInstruction> &instructions)
     {
         if (instructions[i].op == TACOp::ASSIGN && !instructions[i].res.empty())
         {
+            // Registra o nome como global para que, dentro das funções, ele seja
+            // acessado via %rip e não confundido com uma variável local.
+            global_vars.insert(instructions[i].res);
+
             std::cout << "  .globl " << instructions[i].res << "\n";
             std::cout << instructions[i].res << ":\n";
 
@@ -113,6 +147,8 @@ void CodeGen::generate(const std::vector<TACInstruction> &instructions)
     std::cout << "\n  .text\n";
     std::cout << "  .globl main\n\n";
 
+    std::string current_func; // Nome da função atual (usado no rótulo de epílogo)
+
     for (; i < instructions.size(); i++)
     {
         const auto &inst = instructions[i];
@@ -120,20 +156,35 @@ void CodeGen::generate(const std::vector<TACInstruction> &instructions)
         switch (inst.op)
         {
         case TACOp::FUNC_BEGIN:
+        {
+            current_func = inst.res;
             std::cout << inst.res << ":\n";
             std::cout << "  pushq %rbp\n";
             std::cout << "  movq %rsp, %rbp\n";
 
-            computeLocalVariables(instructions, i + 1);
+            std::vector<std::string> params = splitParams(inst.arg1);
+            computeLocalVariables(instructions, i + 1, params);
 
             if (current_stack_size < 0)
             {
                 std::cout << "  subq $" << -current_stack_size << ", %rsp\n";
             }
+
+            // Copia os argumentos recebidos em registradores (System V AMD64)
+            // para os slots de pilha de cada parâmetro.
+            for (size_t p = 0; p < params.size() && p < param_registers.size(); p++)
+            {
+                std::cout << "  movl " << param_registers[p] << ", "
+                          << stack_offsets[params[p]] << "(%rbp)\n";
+            }
+
             param_counter = 0;
             break;
+        }
 
         case TACOp::FUNC_END:
+            // Epílogo único da função: todos os RETURN saltam para cá.
+            std::cout << ".Lepilogue_" << current_func << ":\n";
             std::cout << "  movq %rbp, %rsp\n";
             std::cout << "  popq %rbp\n";
             std::cout << "  ret\n\n";
@@ -229,6 +280,8 @@ void CodeGen::generate(const std::vector<TACInstruction> &instructions)
             {
                 std::cout << "  movl " << getOperand(inst.res) << ", %eax\n";
             }
+            // Salta para o epílogo: garante o retorno mesmo em returns antecipados.
+            std::cout << "  jmp .Lepilogue_" << current_func << "\n";
             break;
 
         case TACOp::AND:

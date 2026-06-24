@@ -62,8 +62,22 @@ void TACVisitor::visit(ProgramNode *node)
 {
     for (auto decl : node->declarations)
     {
-        if (decl)
-            decl->accept(this);
+        if (!decl)
+            continue;
+
+        // Global sem inicializacao (ex.: "int g;"): emite uma atribuicao a zero para
+        // que ela apareca na secao .data e o gerador de Assembly a reconheca como
+        // global (e nao como variavel local). Globais com init ja emitem o ASSIGN.
+        if (auto *var = dynamic_cast<VarDeclNode *>(decl))
+        {
+            if (!var->init_expr)
+            {
+                emit(TACOp::ASSIGN, var->name, "0");
+                continue;
+            }
+        }
+
+        decl->accept(this);
     }
 }
 
@@ -81,7 +95,18 @@ void TACVisitor::visit(FuncDeclNode *node)
     if (!node->body)
         return; // É apenas um protótipo, ignoramos no TAC
 
-    emit(TACOp::FUNC_BEGIN, node->name);
+    // Empacota os nomes dos parâmetros (em ordem) no arg1 do FUNC_BEGIN para que
+    // o gerador de Assembly saiba copiar os registradores de argumento (%edi, %esi, ...)
+    // para os slots de pilha de cada parâmetro. O dump do TAC ignora esse arg1.
+    std::string param_list;
+    for (size_t i = 0; i < node->params.size(); i++)
+    {
+        if (i > 0)
+            param_list += ",";
+        param_list += node->params[i]->name;
+    }
+
+    emit(TACOp::FUNC_BEGIN, node->name, param_list);
     node->body->accept(this);
     emit(TACOp::FUNC_END, node->name);
 }
