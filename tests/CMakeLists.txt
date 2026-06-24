@@ -36,3 +36,10 @@ gtest_discover_tests(testes
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     DISCOVERY_TIMEOUT 60
 )
+
+# Teste de geracao de TAC: compara a saida do compilador (--tac) com golden files.
+# Roda o script de comparacao passando o binario do compilador recem-compilado.
+add_test(
+    NAME tac_golden
+    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/tac/run_tac_tests.sh $<TARGET_FILE:compilador>
+)
