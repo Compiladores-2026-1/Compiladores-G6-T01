@@ -1,0 +1,15 @@
+======================= TAC ========================
+
+.begin_func soma
+  t0 = a + b
+  return t0
+.end_func soma
+
+.begin_func main
+  param 4
+  param 7
+  t1 = call soma, 2
+  r = t1
+  return r
+.end_func main
+========================================================

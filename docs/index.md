@@ -30,9 +30,9 @@ Código-fonte (.cmm)
       ↓
   Análise Semântica   →  AST validada + tabela de símbolos
       ↓
-  Geração TAC         →  código de três endereços  [em desenvolvimento]
+  Geração TAC         →  código de três endereços
       ↓
-  Geração Assembly    →  x86-64                    [em desenvolvimento]
+  Geração Assembly    →  x86-64
 ```
 
 ## Início Rápido

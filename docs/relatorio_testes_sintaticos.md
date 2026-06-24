@@ -43,30 +43,32 @@ Este código automatiza a leitura do arquivo e verifica se o `yyparse()` retorna
 #include <gtest/gtest.h>
 #include <cstdio>
 
-extern "C" {
-    #include "lexer/tokens.h"
-    int yyparse(void);
-    extern FILE *yyin;
-    extern int line;
-    int yylex_destroy(void);
-}
+#include "tokens.hpp"
 
-TEST(ParserTest, ValidacaoGramaticaCompleta) {
-    // Tenta abrir o arquivo de estresse
-    FILE* fp = fopen("../tests/parser/teste_sintatico_parser.cmm", "r");
+int yyparse(void);
+int yylex_destroy(void);
+extern FILE *yyin;
+extern int line;
+
+TEST(ParserTest, ArquivoAbrangente) {
+    // Abre o arquivo de estresse (caminho relativo a raiz do projeto)
+    FILE* fp = fopen("tests/parser/teste_parser.cmm", "r");
     ASSERT_NE(fp, nullptr) << "Erro: Arquivo .cmm não encontrado!";
-    
+
     yyin = fp;
     line = 1;
 
     // O parser deve reduzir todas as regras com sucesso
     int resultado = yyparse();
-    
+
     fclose(fp);
     yylex_destroy();
-    
+
     EXPECT_EQ(resultado, 0) << "O parser encontrou um erro sintático inesperado.";
 }
+```
+
+> O teste reside em `tests/parser/teste_sintatico_parser.cpp` e usa o fixture `tests/parser/teste_parser.cmm`. Ele é compilado junto com a suíte e executado via `ctest` (a partir da raiz do projeto, conforme `WORKING_DIRECTORY` definido no `tests/CMakeLists.txt`).
 
 ## 5. Resultados e Evidências
 
@@ -108,5 +110,6 @@ Abaixo, um fragmento do log gerado pelo compilador durante a redução (bottom-u
 [MAIN]
 [PROGRAM]
 [  PASSED  ] ParserTest.ArquivoAbrangente
+```
 
-`![Log de Reduções Sintáticas](img/testes_sintatico.png)`
+![Log de Reduções Sintáticas](img/testes_sintatico.png)

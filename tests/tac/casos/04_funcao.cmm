@@ -1,0 +1,9 @@
+// Definicao e chamada de funcao: gera param e call.
+int soma(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    int r = soma(4, 7);
+    return r;
+}

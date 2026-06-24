@@ -1,0 +1,53 @@
+name: CI
+
+# Dispara em push e em pull request para validar build, testes e documentacao.
+on:
+    push:
+    pull_request:
+
+# Permissao minima: somente leitura do repositorio.
+permissions:
+    contents: read
+
+# Evita execucoes concorrentes redundantes na mesma ref.
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    # Compila o projeto e roda a suite de testes (GoogleTest via CTest).
+    test:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@v4
+            - name: Instalar dependencias de build
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y flex bison cmake build-essential
+            - name: Configurar (CMake, modo Debug)
+              # Os testes so sao habilitados no build Debug (ver CMakeLists.txt).
+              run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+            - name: Compilar
+              run: cmake --build build -j
+            - name: Executar testes
+              # Falha o job se qualquer teste falhar.
+              run: ctest --test-dir build --output-on-failure
+
+    # Valida o build da documentacao para nao quebrar o GitHub Pages.
+    docs:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v4
+            - name: Configurar Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+            - name: Instalar dependencias de docs
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install mkdocs==1.6.1 mkdocs-material==9.7.6
+            - name: Validar build do site
+              # Mesmo modo estrito usado no deploy: falha em erro de link/nav/config.
+              run: mkdocs build --strict

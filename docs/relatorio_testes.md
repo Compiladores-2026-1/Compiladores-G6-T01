@@ -32,7 +32,9 @@ A definição formal segue o quádruplo $G = \langle V, \Sigma, P, S \rangle$, o
 O comportamento do compilador foi ajustado para suportar **Shadowing** (sobrescrita de escopo) e **Tipagem Estática**. O uso de tokens específicos permite que o parser entenda operações complexas sem ambiguidade, tratando o incremento como uma operação atômica.
 
 ## 4. Metodologia de Teste de Unidade
-Para validar o sistema, foram criadas baterias de testes focadas no Analisador Léxico. O maior desafio técnico foi a sincronização: o Lexer (Flex) precisa importar as definições do Bison para que os nomes dos tokens (`INC`, `ASSIGN`) sejam consistentes em todo o projeto.
+Para validar o sistema, foram criadas baterias de testes cobrindo várias fases do compilador: o **Analisador Léxico** (reconhecimento de tokens), o **Analisador Sintático** (validação *happy path* e *sad path*) e a **Geração de TAC** (comparação da saída com *golden files* — ver [Testes de Geração de Código Intermediário](testes_conversao_tac.md)). O maior desafio técnico foi a sincronização: o Lexer (Flex) precisa importar as definições do Bison para que os nomes dos tokens (`INC`, `ASSIGN`) sejam consistentes em todo o projeto.
+
+Os testes léxicos e sintáticos usam o **GoogleTest**; a comparação de TAC usa um script registrado no **CTest**. Todos são descobertos e executados por um único comando (`ctest`).
 
 ### Códigos de Teste Utilizados (Exemplos):
 
@@ -73,7 +75,9 @@ TEST(LexerTest, IgnoraComentarios) {
 ```
 
 ## 5. Resultados e Comportamento do Sistema
-O sistema apresentou **100% de aproveitamento** nos testes unitários. O comportamento observado confirmou a robustez da análise léxica e a correta integração com o Google Test.
+O sistema apresentou **100% de aproveitamento** nos testes. O comportamento observado confirmou a robustez das análises léxica e sintática, da geração de TAC, e a correta integração com o Google Test e o CTest.
+
+> **Nota:** as imagens abaixo são evidências de uma execução inicial focada na análise léxica (7 testes). Desde então a suíte cresceu — atualmente são executados, via `ctest`, os testes léxicos, sintáticos (*happy* e *sad path*) e a comparação de TAC.
 
 ### Evidências de Execução:
 
@@ -99,8 +103,10 @@ cmake ..
 make
 ```
 
-4.Executar Testes:
+4. **Executar Testes:**
 
 ```sh
-./testes
+ctest --test-dir debug --output-on-failure
 ```
+
+> Esses mesmos testes rodam **automaticamente a cada push e pull request** no repositório. Veja [Integração Contínua (CI)](integracao_continua.md).
