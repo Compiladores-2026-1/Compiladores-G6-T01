@@ -1,0 +1,1964 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../descricao_compilador/">
+      
+      
+        <link rel="next" href="../arquitetura_escopo/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Descrição da lógica de programação do C-- Strict - compiladores-g6-t01</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-introducao" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="compiladores-g6-t01" class="md-header__button md-logo" aria-label="compiladores-g6-t01" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            compiladores-g6-t01
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Descrição da lógica de programação do C-- Strict
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="compiladores-g6-t01" class="md-nav__button md-logo" aria-label="compiladores-g6-t01" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    compiladores-g6-t01
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visão Geral
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../descricao_compilador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição Compilador para C-- Strict para x86-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição da lógica de programação do C-- Strict
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição da lógica de programação do C-- Strict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introdução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-o-paradigma-de-programacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. O Paradigma de Programação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. O Paradigma de Programação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-paradigma-imperativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Paradigma Imperativo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-paradigma-estruturado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Paradigma Estruturado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-estrutura-de-um-programa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Estrutura de um Programa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Estrutura de um Programa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-a-funcao-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. A Função main
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tipagem-estatica-e-variaveis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Tipagem Estática e Variáveis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Tipagem Estática e Variáveis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-tipagem-estatica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Tipagem Estática
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tipos-suportados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Tipos Suportados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-expressoes-e-avaliacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Expressões e Avaliação
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-controle-de-fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Controle de Fluxo
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Controle de Fluxo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-selecao-condicionais-if-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. Seleção: Condicionais (if / else)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-iteracao-repeticoes-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Iteração: Repetições (Loops)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-interrupcao-de-fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3. Interrupção de Fluxo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-escopo-de-variaveis-visibilidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Escopo de Variáveis (Visibilidade)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-funcoes-e-modularidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Funções e Modularidade
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Funções e Modularidade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-definicao-e-invocacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1. Definição e Invocação
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-limitacoes-intencionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Limitações Intencionais
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura_escopo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura Técnica e Regras de Escopo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fases do Compilador
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fases do Compilador
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Léxica (tokens da linguagem)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../funcionamento_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionamento do Analisador Sintático
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gram%C3%A1tica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Sintática (gramática em BNF)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../limitacoes_gramatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Restrições da Linguagem para Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Intermediário (C-- Strict para TAC)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Final (TAC para Assembly)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projeto e Processo
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projeto e Processo
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição das ferramentas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_compilador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição do setup do projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integracao_continua/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integração Contínua (CI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../padrao_commit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documento de padrão de commit (Angular)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementação
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Implementação
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_analise_lexica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Léxica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_analise_sintatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Sintática
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Intermediário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relatorio_testes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório Geral de Testes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relatorio_testes_sintaticos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório de Testes Sintáticos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_analise_lexica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Análise Léxica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_analise_sintatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Análise Sintática
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Geração de Código Intermediário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Geração de Código Final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notas de estudo
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notas de estudo
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notas_estudo_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Capítulo – Definição Formal da gramática livre de contexto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introdução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-o-paradigma-de-programacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. O Paradigma de Programação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. O Paradigma de Programação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-paradigma-imperativo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Paradigma Imperativo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-paradigma-estruturado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Paradigma Estruturado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-estrutura-de-um-programa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Estrutura de um Programa
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Estrutura de um Programa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-a-funcao-main" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. A Função main
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-tipagem-estatica-e-variaveis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Tipagem Estática e Variáveis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Tipagem Estática e Variáveis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-tipagem-estatica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Tipagem Estática
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-tipos-suportados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Tipos Suportados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-expressoes-e-avaliacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Expressões e Avaliação
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-controle-de-fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Controle de Fluxo
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Controle de Fluxo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-selecao-condicionais-if-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. Seleção: Condicionais (if / else)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-iteracao-repeticoes-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Iteração: Repetições (Loops)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-interrupcao-de-fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3. Interrupção de Fluxo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-escopo-de-variaveis-visibilidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Escopo de Variáveis (Visibilidade)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-funcoes-e-modularidade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Funções e Modularidade
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Funções e Modularidade">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-definicao-e-invocacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1. Definição e Invocação
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-limitacoes-intencionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Limitações Intencionais
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Descrição da lógica de programação do C-- Strict</h1>
+
+<h2 id="1-introducao">1. Introdução</h2>
+<p>Este documento especifica a lógica de programação e os fundamentos teóricos da linguagem <strong>C-- Strict (versão simplificada)</strong>. A linguagem foi projetada com uma gramática reduzida, possuindo objetivos educacionais e arquitetônicos bem definidos. Seu foco principal abrange:</p>
+<ul>
+<li><strong>Implementação direta em assembly x86-64:</strong> A sintaxe e a semântica foram desenhadas para permitir uma tradução direta para código de máquina, facilitando o estudo e o desenvolvimento de compiladores.</li>
+<li><strong>Ausência de estruturas complexas:</strong> Conceitos avançados como ponteiros, arrays, alocação dinâmica (heap) e objetos foram intencionalmente omitidos para manter o compilador e a linguagem minimalistas.</li>
+<li><strong>Previsibilidade semântica:</strong> Cada instrução possui um comportamento estrito e previsível, sem abstrações ou operações implícitas de alto nível.</li>
+</ul>
+<p>A linguagem adota o paradigma <strong>imperativo estruturado</strong>, com execução estritamente sequencial e controle explícito de fluxo.</p>
+<hr />
+<h2 id="2-o-paradigma-de-programacao">2. O Paradigma de Programação</h2>
+<p>A arquitetura do C-- Strict baseia-se na combinação de dois conceitos fundamentais da ciência da computação.</p>
+<h3 id="21-paradigma-imperativo">2.1. Paradigma Imperativo</h3>
+<p>No paradigma imperativo, o código-fonte especifica os passos exatos que a máquina deve executar para alcançar um resultado. O modelo é baseado na alteração contínua de estado.</p>
+<ul>
+<li><strong>Mutabilidade e Estado:</strong> O programa possui um estado global e local mantido na memória. As instruções são executadas para modificar esse estado.</li>
+</ul>
+<pre><code class="language-c">// Exemplo de mutabilidade e alteração de estado
+int x;
+x = 5;       // Estado inicial de x
+x = x + 1;   // O estado de x é mutado de forma imperativa para 6
+</code></pre>
+<h3 id="22-paradigma-estruturado">2.2. Paradigma Estruturado</h3>
+<p>O paradigma estruturado é uma disciplina de programação que restringe e organiza o fluxo de controle do programa. Todo o fluxo lógico no C-- Strict é construído de forma hierárquica, utilizando exclusivamente três estruturas fundamentais:</p>
+<ol>
+<li><strong>Sequência:</strong> Execução linear das instruções.</li>
+<li><strong>Seleção:</strong> Avaliação de condições lógicas para tomada de decisões (<code>if</code> / <code>else</code>).</li>
+<li><strong>Iteração:</strong> Repetição controlada de um bloco de código (<code>while</code> / <code>for</code>).</li>
+</ol>
+<hr />
+<h2 id="3-estrutura-de-um-programa">3. Estrutura de um Programa</h2>
+<p>Todo programa em C-- Strict deve seguir uma arquitetura previsível, composta por declarações de escopo global e definições de funções.</p>
+<h3 id="31-a-funcao-main">3.1. A Função <code>main</code></h3>
+<p>É obrigatória a existência de exatamente <strong>uma função chamada <code>main</code></strong>. A execução do programa inicia-se no começo desta função e encerra-se quando o seu bloco é finalizado ou uma instrução <code>return</code> é executada.</p>
+<pre><code class="language-c">// Exemplo da estrutura básica de um programa
+int contador_global = 0; // Segmento Global
+
+int main() {             // Ponto de entrada
+    int status = 1;      // Variável na Pilha (Stack)
+    return 0;            // Encerramento do programa
+}
+</code></pre>
+<hr />
+<h2 id="4-tipagem-estatica-e-variaveis">4. Tipagem Estática e Variáveis</h2>
+<p>Uma variável é uma abstração para um endereço de memória, definida por quatro propriedades: identificador, tipo, valor e escopo.</p>
+<h3 id="41-tipagem-estatica">4.1. Tipagem Estática</h3>
+<p>A linguagem emprega um sistema de tipagem estática. O tipo de uma variável é determinado em tempo de compilação e permanece inalterado durante toda a execução. Operações entre tipos incompatíveis geram erros no processo de compilação.</p>
+<h3 id="42-tipos-suportados">4.2. Tipos Suportados</h3>
+<p>A linguagem suporta tipos primitivos básicos:</p>
+<pre><code class="language-c">int numero = -10;       // Valores inteiros
+float pi = 3.14;        // Valores de ponto flutuante
+char letra = 'A';       // Caracteres isolados
+bool condicao = true;   // Valores booleanos (true ou false)
+</code></pre>
+<p><em>Nota interna:</em> O C-- Strict trata o número <code>0</code> como <code>false</code> e qualquer valor diferente de zero como <code>true</code>.</p>
+<hr />
+<h2 id="5-expressoes-e-avaliacao">5. Expressões e Avaliação</h2>
+<p>Uma <strong>expressão</strong> é uma combinação de variáveis, literais e operadores que é avaliada pelo processador para produzir um único valor. A avaliação respeita estritamente a precedência matemática.</p>
+<pre><code class="language-c">// Exemplo de expressões aritméticas e relacionais
+int a = 5;
+int b = 10;
+int resultado = (a + b) * 2; // O parêntese altera a precedência natural
+bool eh_maior = resultado &gt; 20; // Expressão relacional resultando em booleano
+</code></pre>
+<hr />
+<h2 id="6-controle-de-fluxo">6. Controle de Fluxo</h2>
+<p>As estruturas de controle definem os desvios e iterações na execução das instruções.</p>
+<h3 id="61-selecao-condicionais-if-else">6.1. Seleção: Condicionais (<code>if</code> / <code>else</code>)</h3>
+<p>Avalia uma expressão lógica para determinar o caminho de execução.</p>
+<pre><code class="language-c">int saldo = 100;
+
+if (saldo &gt; 0) {
+    saldo = saldo - 10;
+} else {
+    saldo = 0;
+}
+</code></pre>
+<h3 id="62-iteracao-repeticoes-loops">6.2. Iteração: Repetições (Loops)</h3>
+<p>Estruturas para execução contínua de blocos lógicos.</p>
+<ul>
+<li><strong><code>while</code></strong>: Executa enquanto a condição for avaliada como verdadeira.</li>
+</ul>
+<pre><code class="language-c">int i = 0;
+while (i &lt; 5) {
+    i = i + 1;
+}
+</code></pre>
+<ul>
+<li><strong><code>for</code></strong>: Consolida inicialização, condição e incremento/passo na mesma estrutura.</li>
+</ul>
+<pre><code class="language-c">int total = 0;
+for (int i = 0; i &lt; 10; i++) {
+    total = total + i;
+}
+</code></pre>
+<h3 id="63-interrupcao-de-fluxo">6.3. Interrupção de Fluxo</h3>
+<ul>
+<li><strong><code>break</code></strong>: Causa a saída imediata da iteração mais interna.</li>
+<li><strong><code>continue</code></strong>: Interrompe a iteração atual e salta para a avaliação da próxima condição lógica.</li>
+</ul>
+<hr />
+<h2 id="7-escopo-de-variaveis-visibilidade">7. Escopo de Variáveis (Visibilidade)</h2>
+<p>O escopo define a visibilidade temporal e espacial de uma variável.</p>
+<ul>
+<li><strong>Escopo Global:</strong> Variáveis definidas fora de funções. São acessíveis globalmente.</li>
+<li><strong>Escopo Local:</strong> Variáveis definidas dentro de blocos (delimitados por <code>{}</code>). Existem apenas durante a execução daquele bloco.</li>
+<li><strong>Sobrescrita (Shadowing):</strong> Variáveis locais com o mesmo identificador de variáveis em escopos superiores assumem precedência.</li>
+</ul>
+<pre><code class="language-c">int x = 10; // Variável Global
+
+int main() {
+    int x = 5; // Variável Local. Ocorre &quot;shadowing&quot; da variável global
+
+    if (true) {
+        int x = 2; // Escopo de bloco fechado.
+        // Neste ponto, x vale 2
+    }
+
+    // Neste ponto, x volta a valer 5
+    return 0;
+}
+</code></pre>
+<hr />
+<h2 id="8-funcoes-e-modularidade">8. Funções e Modularidade</h2>
+<p>Funções são sub-rotinas isoladas que encapsulam blocos lógicos, permitindo a modularização e o reuso de código.</p>
+<h3 id="81-definicao-e-invocacao">8.1. Definição e Invocação</h3>
+<p>A cada invocação de função, um novo contexto de execução (Stack Frame) é alocado, garantindo que os parâmetros e variáveis locais não interfiram em outras execuções.</p>
+<pre><code class="language-c">// Definição da função modular
+int calcular_area(int base, int altura) {
+    int area = base * altura;
+    return area; // Retorna o valor e destrói o Stack Frame local
+}
+
+int main() {
+    // Invocação da função e atribuição do resultado
+    int retangulo = calcular_area(10, 5);
+    return 0;
+}
+</code></pre>
+<hr />
+<h2 id="9-limitacoes-intencionais">9. Limitações Intencionais</h2>
+<p>O C-- Strict possui restrições arquitetônicas elaboradas para garantir determinismo e facilidade de compilação. A linguagem <strong>não suporta</strong>:</p>
+<ul>
+<li><strong>Ponteiros e Aritmética de Memória:</strong> Mitiga o risco de violações de segmento (<em>Segmentation Faults</em>) causadas por acessos indevidos à memória.</li>
+<li><strong>Alocação Dinâmica (Heap):</strong> A ausência de operadores como <code>malloc</code> ou <code>new</code> delega a gerência de dados exclusivamente à pilha de execução (Stack), prevenindo vazamentos de memória (<em>memory leaks</em>).</li>
+</ul>
+<p>Estas limitações estabelecem o <strong>determinismo</strong>: a propriedade matemática que assegura que, sob entradas idênticas, a execução do código produzirá inevitavelmente os mesmos resultados, sem efeitos colaterais gerados por manipulações complexas de estado na memória.</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

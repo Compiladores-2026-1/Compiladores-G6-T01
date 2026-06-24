@@ -1,0 +1,2920 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../logica_programacao/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Descrição Compilador para C-- Strict para x86-64 - compiladores-g6-t01</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#descricao-compilador-para-c-strict-para-x86-64" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="compiladores-g6-t01" class="md-header__button md-logo" aria-label="compiladores-g6-t01" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            compiladores-g6-t01
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Descrição Compilador para C-- Strict para x86-64
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="compiladores-g6-t01" class="md-nav__button md-logo" aria-label="compiladores-g6-t01" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    compiladores-g6-t01
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visão Geral
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição Compilador para C-- Strict para x86-64
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição Compilador para C-- Strict para x86-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-visao-geral-do-compilador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Visão Geral do Compilador
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Visão Geral do Compilador">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-objetivo-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Objetivo Principal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-arquitetura-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Arquitetura Geral
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-componentes-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Componentes Principais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Componentes Principais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-frontend-do-compilador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Frontend do Compilador
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1. Frontend do Compilador">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#211-analise-lexica-flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.1. Análise Léxica (Flex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#212-analise-sintatica-bison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.2. Análise Sintática (Bison)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-backend-do-compilador-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Backend do Compilador (C++)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2. Backend do Compilador (C++)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#221-analise-semantica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.1. Análise Semântica
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#222-geracao-de-codigo-intermediario-tac-three-address-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.2. Geração de Código Intermediário (TAC - Three Address Code)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#223-geracao-de-codigo-assembly-x86-64" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.3. Geração de Código Assembly x86-64
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-arquitetura-x86-64-e-convencoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Arquitetura x86-64 e Convenções
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Arquitetura x86-64 e Convenções">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-registradores-disponiveis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Registradores Disponíveis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-segmentacao-de-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Segmentação de Memória
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-convencao-de-chamada-calling-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Convenção de Chamada (Calling Convention)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-fluxo-de-compilacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Fluxo de Compilação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Fluxo de Compilação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-etapas-sequenciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Etapas Sequenciais
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-exemplo-pratico-completo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Exemplo Prático Completo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-tabela-de-simbolos-e-escopos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Tabela de Símbolos e Escopos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Tabela de Símbolos e Escopos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-escopo-global" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Escopo Global
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-escopo-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Escopo Local
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-tabela-de-simbolos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Tabela de Símbolos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-geracao-e-otimizacao-de-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Geração e Otimização de Código
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Geração e Otimização de Código">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-alocacao-de-variaveis-na-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. Alocação de Variáveis na Stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-operacoes-aritmeticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Operações Aritméticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-operacoes-logicas-e-comparacoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3. Operações Lógicas e Comparações
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tratamento-de-erros-e-mensagens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Tratamento de Erros e Mensagens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Tratamento de Erros e Mensagens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-erros-lexicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1. Erros Léxicos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-erros-sintaticos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2. Erros Sintáticos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-erros-semanticos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3. Erros Semânticos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-otimizacoes-implementadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Otimizações Implementadas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Otimizações Implementadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-alocacao-de-registradores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1. Alocação de Registradores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-eliminacao-de-codigo-morto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2. Eliminação de Código Morto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-folding-de-constantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3. Folding de Constantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-ferramentas-e-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Ferramentas e Dependências
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Ferramentas e Dependências">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-ferramentas-de-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1. Ferramentas de Build
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-bibliotecas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2. Bibliotecas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-ambiente-de-desenvolvimento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3. Ambiente de Desenvolvimento
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-limitacoes-e-restricoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Limitações e Restrições
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Limitações e Restrições">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-caracteristicas-nao-suportadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1. Características Não Suportadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-restricoes-de-tipo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2. Restrições de Tipo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-fluxo-de-entrada-e-saida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Fluxo de Entrada e Saída
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Fluxo de Entrada e Saída">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-entrada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1. Entrada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-saida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2. Saída
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-conclusao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Conclusão
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logica_programacao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição da lógica de programação do C-- Strict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura_escopo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura Técnica e Regras de Escopo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fases do Compilador
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fases do Compilador
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Léxica (tokens da linguagem)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../funcionamento_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionamento do Analisador Sintático
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gram%C3%A1tica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Sintática (gramática em BNF)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../limitacoes_gramatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Restrições da Linguagem para Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Intermediário (C-- Strict para TAC)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Final (TAC para Assembly)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projeto e Processo
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projeto e Processo
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição das ferramentas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_compilador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição do setup do projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integracao_continua/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integração Contínua (CI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../padrao_commit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documento de padrão de commit (Angular)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementação
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Implementação
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_analise_lexica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Léxica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_analise_sintatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Sintática
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Intermediário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relatorio_testes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório Geral de Testes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relatorio_testes_sintaticos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório de Testes Sintáticos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_analise_lexica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Análise Léxica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_analise_sintatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Análise Sintática
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Geração de Código Intermediário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Geração de Código Final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notas de estudo
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notas de estudo
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notas_estudo_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Capítulo – Definição Formal da gramática livre de contexto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-visao-geral-do-compilador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Visão Geral do Compilador
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Visão Geral do Compilador">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-objetivo-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1. Objetivo Principal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-arquitetura-geral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2. Arquitetura Geral
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-componentes-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Componentes Principais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Componentes Principais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-frontend-do-compilador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Frontend do Compilador
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1. Frontend do Compilador">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#211-analise-lexica-flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.1. Análise Léxica (Flex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#212-analise-sintatica-bison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.2. Análise Sintática (Bison)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-backend-do-compilador-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Backend do Compilador (C++)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.2. Backend do Compilador (C++)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#221-analise-semantica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.1. Análise Semântica
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#222-geracao-de-codigo-intermediario-tac-three-address-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.2. Geração de Código Intermediário (TAC - Three Address Code)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#223-geracao-de-codigo-assembly-x86-64" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2.3. Geração de Código Assembly x86-64
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-arquitetura-x86-64-e-convencoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Arquitetura x86-64 e Convenções
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Arquitetura x86-64 e Convenções">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-registradores-disponiveis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Registradores Disponíveis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-segmentacao-de-memoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Segmentação de Memória
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-convencao-de-chamada-calling-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Convenção de Chamada (Calling Convention)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-fluxo-de-compilacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Fluxo de Compilação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Fluxo de Compilação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-etapas-sequenciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Etapas Sequenciais
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-exemplo-pratico-completo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Exemplo Prático Completo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-tabela-de-simbolos-e-escopos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Tabela de Símbolos e Escopos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Tabela de Símbolos e Escopos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-escopo-global" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1. Escopo Global
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-escopo-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2. Escopo Local
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-tabela-de-simbolos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3. Tabela de Símbolos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-geracao-e-otimizacao-de-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Geração e Otimização de Código
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Geração e Otimização de Código">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-alocacao-de-variaveis-na-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1. Alocação de Variáveis na Stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-operacoes-aritmeticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2. Operações Aritméticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-operacoes-logicas-e-comparacoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3. Operações Lógicas e Comparações
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tratamento-de-erros-e-mensagens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Tratamento de Erros e Mensagens
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Tratamento de Erros e Mensagens">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-erros-lexicos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1. Erros Léxicos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-erros-sintaticos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2. Erros Sintáticos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-erros-semanticos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3. Erros Semânticos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-otimizacoes-implementadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Otimizações Implementadas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Otimizações Implementadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-alocacao-de-registradores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1. Alocação de Registradores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-eliminacao-de-codigo-morto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2. Eliminação de Código Morto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-folding-de-constantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3. Folding de Constantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-ferramentas-e-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Ferramentas e Dependências
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Ferramentas e Dependências">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-ferramentas-de-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1. Ferramentas de Build
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-bibliotecas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2. Bibliotecas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-ambiente-de-desenvolvimento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3. Ambiente de Desenvolvimento
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-limitacoes-e-restricoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Limitações e Restrições
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Limitações e Restrições">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-caracteristicas-nao-suportadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1. Características Não Suportadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#102-restricoes-de-tipo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2. Restrições de Tipo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-fluxo-de-entrada-e-saida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Fluxo de Entrada e Saída
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Fluxo de Entrada e Saída">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-entrada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1. Entrada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#112-saida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2. Saída
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-conclusao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Conclusão
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="descricao-compilador-para-c-strict-para-x86-64">Descrição Compilador para C-- Strict para x86-64</h1>
+<h2 id="1-visao-geral-do-compilador">1. Visão Geral do Compilador</h2>
+<p>O compilador para <strong>C-- Strict</strong> é um sistema de tradução de código-fonte que transforma um subconjunto simplificado da linguagem C em código <strong>Assembly x86-64</strong>. O projeto foi desenvolvido como ferramenta educacional para o estudo de compiladores, integrando as principais fases de processamento de linguagens de programação.</p>
+<h3 id="11-objetivo-principal">1.1. Objetivo Principal</h3>
+<p>Compilar programas escritos em C-- Strict para código de máquina executável, preservando a semântica da linguagem através de transformações sistemáticas em cada fase do compilador.</p>
+<h3 id="12-arquitetura-geral">1.2. Arquitetura Geral</h3>
+<p>O compilador segue a arquitetura clássica em fases:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    Código-Fonte C-- Strict                  │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │    Análise Léxica (Flex)        │ → Tokens
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │   Análise Sintática (Bison)     │ → AST
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │  Análise Semântica (C++)        │ → AST Validada
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │  Geração de Código Intermediário│ → TAC
+        │         (C++ backend)           │
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │    Geração de Código Final      │ → Assembly x86-64
+        │         (C++ backend)           │
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │  Montagem e Linkagem (GCC)      │ → Executável
+        └────────────────┬────────────────┘
+                         │
+        ┌────────────────▼────────────────┐
+        │       Código de Máquina         │
+        └─────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="2-componentes-principais">2. Componentes Principais</h2>
+<h3 id="21-frontend-do-compilador">2.1. Frontend do Compilador</h3>
+<h4 id="211-analise-lexica-flex">2.1.1. Análise Léxica (Flex)</h4>
+<p>A análise léxica é a primeira fase do compilador, responsável por transformar o código-fonte em uma sequência de <em>tokens</em>.</p>
+<p><strong>Responsabilidades:</strong>
+- Ler o arquivo de entrada caractere por caractere
+- Reconhecer palavras-chave, identificadores, literais e operadores
+- Ignorar comentários e espaços em branco
+- Gerar tokens com seus respectivos tipos e valores</p>
+<p><strong>Saída:</strong> Lista de tokens com informações de localização (linha e coluna)</p>
+<p><strong>Arquivo correspondente:</strong> <code>lexer/lexer.l</code></p>
+<h4 id="212-analise-sintatica-bison">2.1.2. Análise Sintática (Bison)</h4>
+<p>A análise sintática valida a estrutura gramatical do programa, construindo uma árvore de sintaxe abstrata (AST).</p>
+<p><strong>Responsabilidades:</strong>
+- Validar que os tokens seguem a gramática BNF da linguagem
+- Detectar erros sintáticos e reportar sua localização
+- Construir a representação interna (AST) do programa
+- Implementar mecanismos de recuperação de erros</p>
+<p><strong>Saída:</strong> Árvore de Sintaxe Abstrata (AST)</p>
+<p><strong>Arquivo correspondente:</strong> <code>parser/parser.y</code></p>
+<h3 id="22-backend-do-compilador-c">2.2. Backend do Compilador (C++)</h3>
+<p>O backend em C++ implementa as fases semânticas e de geração de código, operando diretamente na AST.</p>
+<h4 id="221-analise-semantica">2.2.1. Análise Semântica</h4>
+<p><strong>Responsabilidades:</strong>
+- Verificar a compatibilidade de tipos em operações
+- Validar escopos e declarações de variáveis
+- Detectar usos de variáveis não-declaradas
+- Implementar tabela de símbolos</p>
+<h4 id="222-geracao-de-codigo-intermediario-tac-three-address-code">2.2.2. Geração de Código Intermediário (TAC - Three Address Code)</h4>
+<p><strong>Responsabilidades:</strong>
+- Converter a AST em uma representação intermediária de três endereços
+- Simplificar operações complexas em operações atômicas
+- Preparar o código para otimizações posteriores
+- Facilitar a tradução para linguagens de máquina distintas</p>
+<p><strong>Exemplo de conversão:</strong></p>
+<pre><code class="language-c">// C-- Strict
+int resultado = (a + b) * (c - d);
+
+// TAC
+temp1 = a + b
+temp2 = c - d
+resultado = temp1 * temp2
+</code></pre>
+<h4 id="223-geracao-de-codigo-assembly-x86-64">2.2.3. Geração de Código Assembly x86-64</h4>
+<p><strong>Responsabilidades:</strong>
+- Traduzir operações TAC em instruções x86-64
+- Gerenciar o espaço de pilha (stack) para variáveis locais
+- Implementar convenções de chamada (calling convention)
+- Otimizar o uso de registradores
+- Gerar código pronto para linkagem</p>
+<hr />
+<h2 id="3-arquitetura-x86-64-e-convencoes">3. Arquitetura x86-64 e Convenções</h2>
+<h3 id="31-registradores-disponiveis">3.1. Registradores Disponíveis</h3>
+<p>O compilador utiliza registradores de propósito geral da arquitetura x86-64:</p>
+<table>
+<thead>
+<tr>
+<th>Registrador</th>
+<th>Tamanho</th>
+<th>Função</th>
+<th>Uso no Compilador</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rax</code></td>
+<td>64-bit</td>
+<td>Acumulador</td>
+<td>Operações gerais, valor de retorno</td>
+</tr>
+<tr>
+<td><code>rcx</code></td>
+<td>64-bit</td>
+<td>Contador</td>
+<td>Loop counter, operandos shift</td>
+</tr>
+<tr>
+<td><code>rdx</code></td>
+<td>64-bit</td>
+<td>Dados</td>
+<td>Operações gerais</td>
+</tr>
+<tr>
+<td><code>rsi</code></td>
+<td>64-bit</td>
+<td>Source Index</td>
+<td>Operações gerais</td>
+</tr>
+<tr>
+<td><code>rdi</code></td>
+<td>64-bit</td>
+<td>Destination Index</td>
+<td>Operações gerais</td>
+</tr>
+<tr>
+<td><code>rbp</code></td>
+<td>64-bit</td>
+<td>Frame Base</td>
+<td>Ponteiro de stack frame</td>
+</tr>
+<tr>
+<td><code>rsp</code></td>
+<td>64-bit</td>
+<td>Stack Pointer</td>
+<td>Topo da pilha</td>
+</tr>
+<tr>
+<td><code>r8-r15</code></td>
+<td>64-bit</td>
+<td>General Purpose</td>
+<td>Operações gerais</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-segmentacao-de-memoria">3.2. Segmentação de Memória</h3>
+<p>O código gerado utiliza três segmentos principais:</p>
+<pre><code class="language-asm">section .data        # Dados inicializados (variáveis globais)
+section .bss         # Dados não inicializados (variáveis não inicializadas)
+section .text        # Código executável
+</code></pre>
+<h3 id="33-convencao-de-chamada-calling-convention">3.3. Convenção de Chamada (Calling Convention)</h3>
+<p>O compilador implementa a convenção <strong>System V AMD64 ABI</strong>:</p>
+<ul>
+<li><strong>Argumentos passados por registrador:</strong> <code>rdi</code>, <code>rsi</code>, <code>rdx</code>, <code>rcx</code>, <code>r8</code>, <code>r9</code></li>
+<li><strong>Valor de retorno:</strong> <code>rax</code></li>
+<li><strong>Registradores preservados:</strong> <code>rbx</code>, <code>rbp</code>, <code>r12-r15</code></li>
+<li><strong>Registradores temporários:</strong> <code>rax</code>, <code>rcx</code>, <code>rdx</code>, <code>rsi</code>, <code>rdi</code>, <code>r8-r11</code></li>
+<li><strong>Stack alignment:</strong> O stack deve estar alinhado a 16 bytes</li>
+</ul>
+<hr />
+<h2 id="4-fluxo-de-compilacao">4. Fluxo de Compilação</h2>
+<h3 id="41-etapas-sequenciais">4.1. Etapas Sequenciais</h3>
+<pre><code>Código Fonte
+    │
+    ├─► Preprocessing (comentários e espaços)
+    │
+    ├─► Análise Léxica (Flex)
+    │   └─► Tokenização
+    │
+    ├─► Análise Sintática (Bison)
+    │   └─► Construção de AST
+    │
+    ├─► Análise Semântica (C++)
+    │   └─► Verificação de tipos e escopos
+    │
+    ├─► Geração de TAC (C++)
+    │   └─► Código intermediário
+    │
+    ├─► Geração de Assembly (C++)
+    │   └─► Tradução para x86-64
+    │
+    ├─► Montagem (GCC Assembler)
+    │   └─► Arquivo objeto (.o)
+    │
+    ├─► Linkagem (GCC Linker)
+    │   └─► Executável final
+    │
+    └─► Executável
+</code></pre>
+<h3 id="42-exemplo-pratico-completo">4.2. Exemplo Prático Completo</h3>
+<p>Dado um programa simples em C-- Strict:</p>
+<pre><code class="language-c">int main() {
+    int x = 5;
+    int y = 3;
+    int z = x + y;
+    return z;
+}
+</code></pre>
+<p><strong>Tokens gerados pela Análise Léxica:</strong></p>
+<pre><code>INT MAIN ( ) { INT x = INTEGER_LITERAL(5) ; INT y = INTEGER_LITERAL(3) ; INT z = x + y ; RETURN z ; }
+</code></pre>
+<p><strong>AST gerado pela Análise Sintática:</strong></p>
+<pre><code>Program
+├─ Function: main
+   └─ Body
+      ├─ Declaration: x = 5
+      ├─ Declaration: y = 3
+      ├─ Declaration: z = (x + y)
+      └─ Return: z
+</code></pre>
+<p><strong>TAC gerado:</strong></p>
+<pre><code>temp1 = 5
+x = temp1
+temp2 = 3
+y = temp2
+temp3 = x
+temp4 = y
+temp5 = temp3 + temp4
+z = temp5
+return z
+</code></pre>
+<p><strong>Assembly x86-64 gerado:</strong></p>
+<pre><code class="language-asm">.global main
+main:
+    push rbp
+    mov rbp, rsp
+    mov dword [rbp-4], 5      # x = 5
+    mov dword [rbp-8], 3      # y = 3
+    mov eax, dword [rbp-4]    # temp3 = x
+    mov ecx, dword [rbp-8]    # temp4 = y
+    add eax, ecx              # temp5 = temp3 + temp4
+    mov dword [rbp-12], eax   # z = temp5
+    mov eax, dword [rbp-12]   # return z
+    pop rbp
+    ret
+</code></pre>
+<hr />
+<h2 id="5-tabela-de-simbolos-e-escopos">5. Tabela de Símbolos e Escopos</h2>
+<h3 id="51-escopo-global">5.1. Escopo Global</h3>
+<p>Variáveis declaradas fora de qualquer função possuem escopo global e são alocadas no segmento <code>.data</code> ou <code>.bss</code>.</p>
+<pre><code class="language-c">int contador_global = 0;  // Escopo global
+int valor_nao_init;       // Escopo global, não inicializado
+
+int main() {
+    // contador_global é acessível aqui
+}
+</code></pre>
+<h3 id="52-escopo-local">5.2. Escopo Local</h3>
+<p>Variáveis declaradas dentro de uma função possuem escopo local, limitado ao bloco onde foram declaradas. São alocadas na pilha (stack).</p>
+<pre><code class="language-c">int main() {
+    int variavel_local = 10;  // Escopo local à função main
+
+    if (variavel_local &gt; 0) {
+        int temp = 5;         // Escopo local ao bloco if
+    }
+    // temp não é acessível aqui
+}
+</code></pre>
+<h3 id="53-tabela-de-simbolos">5.3. Tabela de Símbolos</h3>
+<p>A tabela de símbolos é mantida durante toda a compilação para:
+- Rastrear declarações de variáveis
+- Verificar redeclarações
+- Associar identificadores a tipos
+- Armazenar informações de endereço de memória</p>
+<hr />
+<h2 id="6-geracao-e-otimizacao-de-codigo">6. Geração e Otimização de Código</h2>
+<h3 id="61-alocacao-de-variaveis-na-stack">6.1. Alocação de Variáveis na Stack</h3>
+<p>O compilador utiliza a pilha (stack) para armazenar variáveis locais. O espaço é alocado dinamicamente durante a execução, seguindo a convenção x86-64.</p>
+<p><strong>Layout de Stack Frame:</strong></p>
+<pre><code>[rbp + 8]     ← Endereço de retorno
+[rbp]         ← Base do frame anterior
+[rbp - 8]     ← Primeira variável local
+[rbp - 16]    ← Segunda variável local
+...
+[rsp]         ← Topo do stack (stack pointer)
+</code></pre>
+<h3 id="62-operacoes-aritmeticas">6.2. Operações Aritméticas</h3>
+<p>Operações aritméticas são traduzidas diretamente para instruções x86-64:</p>
+<table>
+<thead>
+<tr>
+<th>C-- Strict</th>
+<th>Assembly x86-64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a + b</code></td>
+<td><code>add rax, rbx</code></td>
+</tr>
+<tr>
+<td><code>a - b</code></td>
+<td><code>sub rax, rbx</code></td>
+</tr>
+<tr>
+<td><code>a * b</code></td>
+<td><code>imul rax, rbx</code></td>
+</tr>
+<tr>
+<td><code>a / b</code></td>
+<td><code>idiv rbx</code></td>
+</tr>
+<tr>
+<td><code>a % b</code></td>
+<td><code>idiv rbx</code> (usa <code>rdx</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-operacoes-logicas-e-comparacoes">6.3. Operações Lógicas e Comparações</h3>
+<pre><code class="language-asm">cmp rax, rbx        # Compara rax com rbx
+je label            # Jump if Equal
+jne label           # Jump if Not Equal
+jl label            # Jump if Less
+jle label           # Jump if Less or Equal
+jg label            # Jump if Greater
+jge label           # Jump if Greater or Equal
+</code></pre>
+<hr />
+<h2 id="7-tratamento-de-erros-e-mensagens">7. Tratamento de Erros e Mensagens</h2>
+<p>O compilador reporta erros em diferentes fases com informações precisas:</p>
+<h3 id="71-erros-lexicos">7.1. Erros Léxicos</h3>
+<p>Caracteres não reconhecidos ou inválidos.</p>
+<pre><code>Erro Léxico - Linha 5: Caractere inválido '@'
+</code></pre>
+<h3 id="72-erros-sintaticos">7.2. Erros Sintáticos</h3>
+<p>Violações da gramática da linguagem.</p>
+<pre><code>Erro Sintático - Linha 10: Esperado ';' após declaração
+</code></pre>
+<h3 id="73-erros-semanticos">7.3. Erros Semânticos</h3>
+<p>Incompatibilidades de tipo, escopos inválidos, etc.</p>
+<pre><code>Erro Semântico - Linha 15: Variável 'x' não foi declarada
+Erro Semântico - Linha 20: Incompatibilidade de tipos em atribuição
+</code></pre>
+<hr />
+<h2 id="8-otimizacoes-implementadas">8. Otimizações Implementadas</h2>
+<h3 id="81-alocacao-de-registradores">8.1. Alocação de Registradores</h3>
+<p>O backend tenta alocar variáveis em registradores quando possível, reduzindo acessos à memória.</p>
+<h3 id="82-eliminacao-de-codigo-morto">8.2. Eliminação de Código Morto</h3>
+<p>Código que nunca será executado é detectado e removido durante a geração de código intermediário.</p>
+<h3 id="83-folding-de-constantes">8.3. Folding de Constantes</h3>
+<p>Expressões com operandos constantes são pré-avaliadas em tempo de compilação:</p>
+<pre><code class="language-c">// Entrada
+int resultado = 5 + 3;
+
+// Saída (já folded)
+int resultado = 8;
+</code></pre>
+<hr />
+<h2 id="9-ferramentas-e-dependencias">9. Ferramentas e Dependências</h2>
+<h3 id="91-ferramentas-de-build">9.1. Ferramentas de Build</h3>
+<ul>
+<li><strong>Flex:</strong> Análise Léxica (v2.6+)</li>
+<li><strong>Bison:</strong> Análise Sintática (v3.0+)</li>
+<li><strong>GCC:</strong> Compilação e Linkagem (v9.0+)</li>
+<li><strong>CMake:</strong> Sistema de Build (v3.10+)</li>
+</ul>
+<h3 id="92-bibliotecas">9.2. Bibliotecas</h3>
+<ul>
+<li><strong>C++ Standard Library:</strong> Estruturas de dados e algoritmos</li>
+</ul>
+<h3 id="93-ambiente-de-desenvolvimento">9.3. Ambiente de Desenvolvimento</h3>
+<ul>
+<li><strong>Sistema Operacional:</strong> Linux/macOS</li>
+<li><strong>Arquitetura:</strong> x86-64</li>
+</ul>
+<hr />
+<h2 id="10-limitacoes-e-restricoes">10. Limitações e Restrições</h2>
+<h3 id="101-caracteristicas-nao-suportadas">10.1. Características Não Suportadas</h3>
+<ul>
+<li><strong>Ponteiros:</strong> Não há suporte para pointers ou referências</li>
+<li><strong>Arrays:</strong> Estruturas de dados complexas não são suportadas</li>
+<li><strong>Alocação Dinâmica:</strong> Sem heap ou <code>malloc</code></li>
+<li><strong>Objetos e Classes:</strong> Nenhum suporte a POO</li>
+<li><strong>Funções Recursivas:</strong> Não há suporte a chamadas recursivas</li>
+<li><strong>Strings:</strong> Apenas caracteres individuais</li>
+<li><strong>Bibliotecas Externas:</strong> Sem linkagem com bibliotecas do SO</li>
+</ul>
+<h3 id="102-restricoes-de-tipo">10.2. Restrições de Tipo</h3>
+<ul>
+<li>Tipos básicos: <code>int</code>, <code>float</code>, <code>char</code>, <code>bool</code></li>
+<li>Sem conversão implícita entre tipos incompatíveis</li>
+<li>Operações sobre tipos devem ser explícitas</li>
+</ul>
+<hr />
+<h2 id="11-fluxo-de-entrada-e-saida">11. Fluxo de Entrada e Saída</h2>
+<h3 id="111-entrada">11.1. Entrada</h3>
+<p>O compilador aceita um arquivo de código-fonte C-- Strict como entrada:</p>
+<pre><code class="language-bash">./compilador programa.cmm
+</code></pre>
+<h3 id="112-saida">11.2. Saída</h3>
+<p>O compilador gera:
+1. <strong>Arquivo Assembly:</strong> <code>programa.s</code> (código intermediário legível)
+2. <strong>Arquivo Objeto:</strong> <code>programa.o</code> (gerado pelo assembler)
+3. <strong>Executável:</strong> <code>programa</code> (resultado final após linkagem)</p>
+<hr />
+<h2 id="12-conclusao">12. Conclusão</h2>
+<p>O compilador para C-- Strict representa uma implementação educacional completa de um sistema de tradução, demonstrando os conceitos fundamentais da engenharia de compiladores. Através de suas fases bem-definidas e sua orientação para x86-64, oferece uma base sólida para compreender como linguagens de alto nível são transformadas em código de máquina executável.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

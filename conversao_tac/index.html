@@ -1,0 +1,2139 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../limitacoes_gramatica/">
+      
+      
+        <link rel="next" href="../conversao_assembly/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Geração de Código Intermediário (C-- Strict para TAC) - compiladores-g6-t01</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#geracao-de-codigo-intermediario-c-strict-para-tac" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="compiladores-g6-t01" class="md-header__button md-logo" aria-label="compiladores-g6-t01" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            compiladores-g6-t01
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Geração de Código Intermediário (C-- Strict para TAC)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="compiladores-g6-t01" class="md-nav__button md-logo" aria-label="compiladores-g6-t01" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    compiladores-g6-t01
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visão Geral
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../descricao_compilador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição Compilador para C-- Strict para x86-64
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../logica_programacao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição da lógica de programação do C-- Strict
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura_escopo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura Técnica e Regras de Escopo
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fases do Compilador
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fases do Compilador
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tokens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Léxica (tokens da linguagem)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../funcionamento_parser/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Funcionamento do Analisador Sintático
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Gram%C3%A1tica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Sintática (gramática em BNF)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../limitacoes_gramatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Restrições da Linguagem para Parsing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Intermediário (C-- Strict para TAC)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Intermediário (C-- Strict para TAC)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-o-que-e-o-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. O que é o TAC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-estrutura-de-uma-instrucao-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Estrutura de uma Instrução TAC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-conjunto-de-instrucoes-suportadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Conjunto de Instruções Suportadas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Conjunto de Instruções Suportadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tabela-completa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Tabela Completa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-grupos-por-categoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Grupos por Categoria
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2. Grupos por Categoria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aritmeticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aritméticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relacionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relacionais
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lógicas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#controle-de-fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controle de fluxo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#funcoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Funções
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-exemplos-de-conversao-c-strict-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Exemplos de Conversão C-- Strict → TAC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Exemplos de Conversão C-- Strict → TAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-expressao-aritmetica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Expressão Aritmética
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-condicional-if-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Condicional if / else
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-loop-while" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Loop while
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-loop-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Loop for
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-operadores-unarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Operadores Unários
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-chamada-de-funcao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6. Chamada de Função
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-variaveis-temporarias-e-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Variáveis Temporárias e Labels
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Final (TAC para Assembly)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projeto e Processo
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Projeto e Processo
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ferramentas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição das ferramentas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup_compilador/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Descrição do setup do projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integracao_continua/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integração Contínua (CI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../padrao_commit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documento de padrão de commit (Angular)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementação
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Implementação
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_analise_lexica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Léxica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_analise_sintatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise Sintática
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Intermediário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementacao_conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geração de Código Final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relatorio_testes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório Geral de Testes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relatorio_testes_sintaticos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relatório de Testes Sintáticos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_analise_lexica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Análise Léxica
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_analise_sintatica/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Análise Sintática
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_conversao_tac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Geração de Código Intermediário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testes_conversao_assembly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testes de Geração de Código Final
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notas de estudo
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Notas de estudo
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notas_estudo_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Capítulo – Definição Formal da gramática livre de contexto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-o-que-e-o-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. O que é o TAC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-estrutura-de-uma-instrucao-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Estrutura de uma Instrução TAC
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-conjunto-de-instrucoes-suportadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Conjunto de Instruções Suportadas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Conjunto de Instruções Suportadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tabela-completa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Tabela Completa
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-grupos-por-categoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Grupos por Categoria
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2. Grupos por Categoria">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aritmeticas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aritméticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relacionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relacionais
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lógicas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#controle-de-fluxo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controle de fluxo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#funcoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Funções
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-exemplos-de-conversao-c-strict-tac" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Exemplos de Conversão C-- Strict → TAC
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Exemplos de Conversão C-- Strict → TAC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-expressao-aritmetica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Expressão Aritmética
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-condicional-if-else" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Condicional if / else
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-loop-while" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Loop while
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-loop-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Loop for
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-operadores-unarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Operadores Unários
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-chamada-de-funcao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6. Chamada de Função
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-variaveis-temporarias-e-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Variáveis Temporárias e Labels
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="geracao-de-codigo-intermediario-c-strict-para-tac">Geração de Código Intermediário (C-- Strict para TAC)</h1>
+<h2 id="1-o-que-e-o-tac">1. O que é o TAC</h2>
+<p>O <strong>TAC</strong> (<em>Three-Address Code</em>, ou Código de Três Endereços) é a representação intermediária usada pelo compilador entre a análise semântica e a geração de Assembly. Cada instrução TAC possui no máximo três operandos: um resultado e até dois argumentos.</p>
+<pre><code>resultado = arg1 OPERADOR arg2
+</code></pre>
+<p>Essa representação simplifica a geração de código final, pois cada instrução TAC mapeia diretamente para um pequeno conjunto de instruções Assembly.</p>
+<hr />
+<h2 id="2-estrutura-de-uma-instrucao-tac">2. Estrutura de uma Instrução TAC</h2>
+<p>No compilador, cada instrução TAC é representada pela struct:</p>
+<pre><code class="language-cpp">struct TACInstruction {
+    TACOp       op;    // Tipo da operação
+    std::string res;   // Resultado ou destino
+    std::string arg1;  // Primeiro argumento
+    std::string arg2;  // Segundo argumento
+};
+</code></pre>
+<p>Os campos <code>res</code>, <code>arg1</code> e <code>arg2</code> são strings que podem conter:</p>
+<ul>
+<li><strong>Variáveis do programa:</strong> <code>x</code>, <code>resultado</code>, <code>i</code></li>
+<li><strong>Temporárias geradas:</strong> <code>t0</code>, <code>t1</code>, <code>t2</code>, ... (incrementadas automaticamente)</li>
+<li><strong>Labels de controle:</strong> <code>L0</code>, <code>L1</code>, <code>L2</code>, ... (incrementadas automaticamente)</li>
+<li><strong>Literais:</strong> <code>5</code>, <code>3.14</code>, <code>true</code></li>
+<li><strong>Nomes de funções:</strong> <code>soma</code>, <code>main</code></li>
+</ul>
+<hr />
+<h2 id="3-conjunto-de-instrucoes-suportadas">3. Conjunto de Instruções Suportadas</h2>
+<h3 id="31-tabela-completa">3.1. Tabela Completa</h3>
+<table>
+<thead>
+<tr>
+<th>Código (<code>TACOp</code>)</th>
+<th>Sintaxe TAC</th>
+<th>Operação</th>
+<th>Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADD</code></td>
+<td><code>res = arg1 + arg2</code></td>
+<td>Adição</td>
+<td><code>t0 = x + 5</code></td>
+</tr>
+<tr>
+<td><code>SUB</code></td>
+<td><code>res = arg1 - arg2</code></td>
+<td>Subtração</td>
+<td><code>t1 = a - b</code></td>
+</tr>
+<tr>
+<td><code>MUL</code></td>
+<td><code>res = arg1 * arg2</code></td>
+<td>Multiplicação</td>
+<td><code>t2 = 3 * c</code></td>
+</tr>
+<tr>
+<td><code>DIV</code></td>
+<td><code>res = arg1 / arg2</code></td>
+<td>Divisão inteira</td>
+<td><code>t3 = x / 2</code></td>
+</tr>
+<tr>
+<td><code>MOD</code></td>
+<td><code>res = arg1 % arg2</code></td>
+<td>Módulo</td>
+<td><code>t4 = y % 10</code></td>
+</tr>
+<tr>
+<td><code>EQ</code></td>
+<td><code>res = arg1 == arg2</code></td>
+<td>Igualdade</td>
+<td><code>t5 = x == 0</code></td>
+</tr>
+<tr>
+<td><code>NEQ</code></td>
+<td><code>res = arg1 != arg2</code></td>
+<td>Diferença</td>
+<td><code>t6 = a != b</code></td>
+</tr>
+<tr>
+<td><code>LT</code></td>
+<td><code>res = arg1 &lt; arg2</code></td>
+<td>Menor que</td>
+<td><code>t7 = i &lt; n</code></td>
+</tr>
+<tr>
+<td><code>GT</code></td>
+<td><code>res = arg1 &gt; arg2</code></td>
+<td>Maior que</td>
+<td><code>t8 = x &gt; 100</code></td>
+</tr>
+<tr>
+<td><code>LE</code></td>
+<td><code>res = arg1 &lt;= arg2</code></td>
+<td>Menor ou igual</td>
+<td><code>t9 = a &lt;= 50</code></td>
+</tr>
+<tr>
+<td><code>GE</code></td>
+<td><code>res = arg1 &gt;= arg2</code></td>
+<td>Maior ou igual</td>
+<td><code>t10 = b &gt;= 10</code></td>
+</tr>
+<tr>
+<td><code>AND</code></td>
+<td><code>res = arg1 &amp;&amp; arg2</code></td>
+<td>E lógico</td>
+<td><code>t11 = p &amp;&amp; q</code></td>
+</tr>
+<tr>
+<td><code>OR</code></td>
+<td><code>res = arg1 \|\| arg2</code></td>
+<td>Ou lógico</td>
+<td><code>t12 = r \|\| s</code></td>
+</tr>
+<tr>
+<td><code>ASSIGN</code></td>
+<td><code>res = arg1</code></td>
+<td>Atribuição simples</td>
+<td><code>x = t0</code></td>
+</tr>
+<tr>
+<td><code>JUMP</code></td>
+<td><code>goto label</code></td>
+<td>Salto incondicional</td>
+<td><code>goto L5</code></td>
+</tr>
+<tr>
+<td><code>JUMPF</code></td>
+<td><code>ifFalse arg1 goto label</code></td>
+<td>Salto condicional</td>
+<td><code>ifFalse t0 goto L3</code></td>
+</tr>
+<tr>
+<td><code>LABEL</code></td>
+<td><code>label:</code></td>
+<td>Marcador de rótulo</td>
+<td><code>L0:</code></td>
+</tr>
+<tr>
+<td><code>CALL</code></td>
+<td><code>res = call func, n</code></td>
+<td>Chamada de função</td>
+<td><code>t13 = call soma, 2</code></td>
+</tr>
+<tr>
+<td><code>PARAM</code></td>
+<td><code>param arg1</code></td>
+<td>Passagem de argumento</td>
+<td><code>param x</code></td>
+</tr>
+<tr>
+<td><code>GET_PARAM</code></td>
+<td><code>res = get_param idx</code></td>
+<td>Recebimento de parâmetro</td>
+<td><code>a = get_param 0</code></td>
+</tr>
+<tr>
+<td><code>RETURN</code></td>
+<td><code>return [arg1]</code></td>
+<td>Retorno de função</td>
+<td><code>return t0</code></td>
+</tr>
+<tr>
+<td><code>FUNC_BEGIN</code></td>
+<td><code>.begin_func nome</code></td>
+<td>Início de função</td>
+<td><code>.begin_func main</code></td>
+</tr>
+<tr>
+<td><code>FUNC_END</code></td>
+<td><code>.end_func nome</code></td>
+<td>Fim de função</td>
+<td><code>.end_func main</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="32-grupos-por-categoria">3.2. Grupos por Categoria</h3>
+<h4 id="aritmeticas">Aritméticas</h4>
+<p>Operações binárias sobre inteiros. O resultado é armazenado em uma variável temporária.</p>
+<pre><code>t0 = a + b
+t1 = t0 * c
+t2 = t1 / 2
+t3 = t2 % 10
+</code></pre>
+<h4 id="relacionais">Relacionais</h4>
+<p>Produzem valor booleano (<code>0</code> ou <code>1</code>) armazenado em temporária. Usadas como condição para <code>JUMPF</code>.</p>
+<pre><code>t4 = x == 0
+t5 = i &lt; n
+t6 = a != b
+</code></pre>
+<h4 id="logicas">Lógicas</h4>
+<p>Operações <code>and</code> / <code>or</code> da linguagem. Os operandos são booleanos (resultado de relacionais ou variáveis bool).</p>
+<pre><code>t7 = t4 &amp;&amp; t5
+t8 = t6 || t7
+</code></pre>
+<h4 id="controle-de-fluxo">Controle de fluxo</h4>
+<p>Combinam <code>LABEL</code>, <code>JUMP</code> e <code>JUMPF</code> para implementar <code>if</code>, <code>while</code> e <code>for</code>.</p>
+<pre><code>L0:
+  t0 = i &lt; n
+  ifFalse t0 goto L1
+  ...
+  goto L0
+L1:
+</code></pre>
+<h4 id="funcoes">Funções</h4>
+<p>Sequência de instruções para chamar e declarar funções:</p>
+<pre><code>param x           ← empilha argumento
+param y
+t0 = call soma, 2 ← chama função com 2 args, resultado em t0
+</code></pre>
+<pre><code>.begin_func soma  ← início da função
+  a = get_param 0 ← recebe 1º parâmetro
+  b = get_param 1 ← recebe 2º parâmetro
+  t0 = a + b
+  return t0
+.end_func soma
+</code></pre>
+<hr />
+<h2 id="4-exemplos-de-conversao-c-strict-tac">4. Exemplos de Conversão C-- Strict → TAC</h2>
+<h3 id="41-expressao-aritmetica">4.1. Expressão Aritmética</h3>
+<pre><code class="language-c">int resultado = (a + b) * (c - d);
+</code></pre>
+<pre><code>t0 = a + b
+t1 = c - d
+t2 = t0 * t1
+resultado = t2
+</code></pre>
+<h3 id="42-condicional-if-else">4.2. Condicional <code>if / else</code></h3>
+<pre><code class="language-c">if (x &gt; 0) {
+    y = 1;
+} else {
+    y = 0;
+}
+</code></pre>
+<pre><code>t0 = x &gt; 0
+ifFalse t0 goto L0
+  y = 1
+  goto L1
+L0:
+  y = 0
+L1:
+</code></pre>
+<h3 id="43-loop-while">4.3. Loop <code>while</code></h3>
+<pre><code class="language-c">while (i &lt; n) {
+    i = i + 1;
+}
+</code></pre>
+<pre><code>L0:
+  t0 = i &lt; n
+  ifFalse t0 goto L1
+  t1 = i + 1
+  i = t1
+  goto L0
+L1:
+</code></pre>
+<h3 id="44-loop-for">4.4. Loop <code>for</code></h3>
+<pre><code class="language-c">for (int k = 0; k &lt; 10; k++) {
+    soma = soma + k;
+}
+</code></pre>
+<pre><code>  k = 0
+L0:
+  t0 = k &lt; 10
+  ifFalse t0 goto L1
+  t1 = soma + k
+  soma = t1
+  t2 = k
+  t3 = k + 1
+  k = t3
+  goto L0
+L1:
+</code></pre>
+<h3 id="45-operadores-unarios">4.5. Operadores Unários</h3>
+<table>
+<thead>
+<tr>
+<th>Expressão C--</th>
+<th>TAC gerado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>++x</code> (prefixo)</td>
+<td><code>t0 = x + 1</code> / <code>x = t0</code></td>
+</tr>
+<tr>
+<td><code>--x</code> (prefixo)</td>
+<td><code>t0 = x - 1</code> / <code>x = t0</code></td>
+</tr>
+<tr>
+<td><code>x++</code> (pós-fixo)</td>
+<td><code>t0 = x</code> / <code>t1 = x + 1</code> / <code>x = t1</code> (resultado = <code>t0</code>)</td>
+</tr>
+<tr>
+<td><code>x--</code> (pós-fixo)</td>
+<td><code>t0 = x</code> / <code>t1 = x - 1</code> / <code>x = t1</code> (resultado = <code>t0</code>)</td>
+</tr>
+<tr>
+<td><code>-x</code> (negação)</td>
+<td><code>t0 = 0 - x</code></td>
+</tr>
+<tr>
+<td><code>!x</code> / <code>not x</code></td>
+<td><code>t0 = x == 0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="46-chamada-de-funcao">4.6. Chamada de Função</h3>
+<pre><code class="language-c">int r = soma(a, b);
+</code></pre>
+<pre><code>param a
+param b
+t0 = call soma, 2
+r = t0
+</code></pre>
+<hr />
+<h2 id="5-variaveis-temporarias-e-labels">5. Variáveis Temporárias e Labels</h2>
+<p>O gerador de TAC mantém dois contadores globais incrementados automaticamente:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Formato</th>
+<th>Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Temporária</td>
+<td><code>t</code> + número</td>
+<td><code>t0</code>, <code>t1</code>, <code>t2</code>, ...</td>
+</tr>
+<tr>
+<td>Label</td>
+<td><code>L</code> + número</td>
+<td><code>L0</code>, <code>L1</code>, <code>L2</code>, ...</td>
+</tr>
+</tbody>
+</table>
+<p>Temporárias nunca são reutilizadas dentro de uma mesma função, garantindo que cada cálculo intermediário tenha seu próprio registrador virtual.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
